@@ -44,25 +44,12 @@ string	ExpressionEvaluator::driver(string inputExpr)
 
 	tokens = tokenize(inputExpr);
 
-	if (isSimpleExpression(tokens))
-	{
-		double res = evaluateExpression(tokens, &outStatus);
+	double res = evaluateExpression(tokens, &outStatus);
 
-		if (outStatus == CalculatorStatus::STATUS_OK)
-			result = std::to_string(res);
-		else
-			result = _errorMessages[outStatus];
-	}
+	if (outStatus == CalculatorStatus::STATUS_OK)
+		result = std::to_string(res);
 	else
-	{
-		string varName;
-		double varValue = solveLinearEquation(tokens, varName, &outStatus);
-
-		if (outStatus == CalculatorStatus::STATUS_OK)
-			result = varName + "=" + std::to_string(varValue);
-		else
-			result = _errorMessages[outStatus];
-	}
+		result = _errorMessages[outStatus];
 
 	return result;
 }
@@ -109,29 +96,29 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 		if (*outStatus != CalculatorStatus::STATUS_OK)
 			return output;
 
-		t = *iter;																													//Read a token.
+		t = *iter;																			//Read a token.
 
-		if (t.tokenType == TokenType::number) {															//If the token is a number, then add it to the output queue.
+		if (t.tokenType == TokenType::number) {												//If the token is a number, then add it to the output queue.
 			checkTransition(lastElem, TokenType::number, outStatus);
 			lastElem = TokenType::number;
 
 			output.push_back(t);
 		}
-		else if (t.tokenType == TokenType::name)														//If the token is a function token, then push it onto the stack.
+		else if (t.tokenType == TokenType::name)											//If the token is a function token, then push it onto the stack.
 		{
 			checkTransition(lastElem, TokenType::name, outStatus);
 			lastElem = TokenType::name;
 
 			output.push_back(t);
 		}
-		else if (t.tokenType == TokenType::function)												//If the token is a function token, then push it onto the stack.
+		else if (t.tokenType == TokenType::function)										//If the token is a function token, then push it onto the stack.
 		{
 			checkTransition(lastElem, TokenType::function, outStatus);
 			lastElem = TokenType::function;
 
 			stack.push(t);
 		}
-		else if (isTokenOperator(t))																				//If the token is an operator, o1, then :
+		else if (isTokenOperator(t))														//If the token is an operator, o1, then :
 		{
 			checkTransition(lastElem, t.tokenType, outStatus);
 			lastElem = t.tokenType;
@@ -168,14 +155,14 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 			//	push o1 onto the operator stack.
 			stack.push(t);
 		}
-		else if (t.tokenType == TokenType::left)															//If the token is a left parenthesis, then push it onto the stack.
+		else if (t.tokenType == TokenType::left)											//If the token is a left parenthesis, then push it onto the stack.
 		{
 			checkTransition(lastElem, TokenType::left, outStatus);
 			lastElem = TokenType::left;
 
 			stack.push(t);
 		}
-		else if (t.tokenType == TokenType::right)															//If the token is a right parenthesis :
+		else if (t.tokenType == TokenType::right)											//If the token is a right parenthesis :
 		{
 			checkTransition(lastElem, TokenType::right, outStatus);
 			lastElem = TokenType::right;
@@ -314,7 +301,7 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 			}
 		}
 
-		iter2++;
+		++iter2;
 	}
 
 	// final result should be on top of the evalStack
@@ -330,258 +317,6 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 	return 0.0;
 }
 
-double	ExpressionEvaluator::solveLinearEquation(vector<Token> &vecTokens, string &outVarName, CalculatorStatus *outStatus)
-{
-	//CalculatorStatus status = CalculatorStatus::STATUS_OK;
-
-	// first, we'll find a variable name
-	auto varName = find_if(begin(vecTokens), end(vecTokens), [](Token &t) { return t.tokenType == TokenType::name; });
-
-	if (varName == end(vecTokens))
-	{
-		*outStatus = CalculatorStatus::NO_VAR_IN_EQUATION;
-		return 0.0;
-	}
-	outVarName = (*varName).stringValue;
-
-	// find assing (=) sign and split token array in two parts, left and right
-	auto assignSign = find_if(begin(vecTokens), end(vecTokens), [](Token &t) { return t.tokenType == TokenType::assign; });
-
-	if (assignSign != end(vecTokens))
-	{
-		// splitting left and right side (and adding TokenType::end to each expression)
-		vector<Token> leftSide(begin(vecTokens), assignSign);
-		vector<Token> rightSide(assignSign + 1, end(vecTokens) - 1);
-
-		leftSide.push_back(Token{ TokenType::end });
-		rightSide.push_back(Token{ TokenType::end });
-
-		// FIRST - we have to change all terms of the form [name] * [number] to form [number] * [name]
-		reorderVariableMultiplication(leftSide);
-		reorderVariableMultiplication(rightSide);
-
-		// now we need to transform them to RPN
-		vector<Token> leftRPN = transformToRPN(leftSide, outStatus);
-		vector<Token> rightRPN = transformToRPN(rightSide, outStatus);
-
-		// and then simplify expressions 
-		vector<Token> leftSimple = simplifyExpression(leftRPN, outStatus);
-		vector<Token> rightSimple = simplifyExpression(rightRPN, outStatus);
-
-		// Now we expect to have two simple expressions. Since the requirement of the task is that there is only addition and multiplication in this equations, 
-		// we expect to have a list of terms of the form [number, mul, name] plus/minus [number, mul, name] plus/minus [number]
-
-		double leftVarCoef = 0;
-		double leftNum = 0;
-		double rightVarCoef = 0;
-		double rightNum = 0;
-
-		sumNameCoefficients(leftSimple, &leftVarCoef, &leftNum);
-		sumNameCoefficients(rightSimple, &rightVarCoef, &rightNum);
-
-		if (leftVarCoef - rightVarCoef == 0.0)
-		{
-			*outStatus = CalculatorStatus::INIFINITY_VARIABLE_VALUE;
-			return 0.0;
-		}
-
-		return (rightNum - leftNum) / (leftVarCoef - rightVarCoef);
-	}
-	else		// ERROR - no = sign?
-		*outStatus = CalculatorStatus::NO_EQUAL_SIGN_IN_EQUATION;
-
-	return 0.0;
-}
-
-vector<Token> ExpressionEvaluator::simplifyExpression(vector<Token> output, CalculatorStatus *outStatus)
-{
-	std::stack<Token>	evalStack;
-	auto iter2 = begin(output);
-	while (iter2->tokenType != TokenType::end)
-	{
-		Token t = *iter2;
-
-		if (t.tokenType == TokenType::number || t.tokenType == TokenType::name)
-		{
-			if (t.tokenType == TokenType::name)
-				t.numberValue = 1.0;
-
-			evalStack.push(t);
-		}
-		else if (isTokenOperator(t))
-		{
-			// take two element from top of the evaluation stack and perform operation
-			Token oper1 = evalStack.top(); evalStack.pop();
-			Token oper2 = evalStack.top(); evalStack.pop();
-			Token res;
-
-			// if we have undefined variables, we are just going to push them back to the stack
-			if (oper1.tokenType == TokenType::name || oper2.tokenType == TokenType::name)
-			{
-				// BUT, if we have a multiplication operation ([number] * [name]), we are going to "perform" it virtually - ie. we'll write multiplication coefficient inside token representing variable
-				if (t.tokenType == TokenType::mul)
-				{
-					res.tokenType = TokenType::name;
-					if (oper1.tokenType == TokenType::name)
-						res.numberValue = oper2.numberValue;
-					else
-						res.numberValue = oper1.numberValue;
-					evalStack.push(res);
-				}
-				else
-				{
-					evalStack.push(oper2);
-					evalStack.push(t);
-					evalStack.push(oper1);
-				}
-			}
-			else
-			{
-				switch (t.tokenType)
-				{
-				case TokenType::plus:
-					res.numberValue = oper1.numberValue + oper2.numberValue;
-					res.tokenType = TokenType::number;
-					evalStack.push(res);
-					break;
-				case TokenType::minus:
-					res.numberValue = oper2.numberValue - oper1.numberValue;
-					res.tokenType = TokenType::number;
-					evalStack.push(res);
-					break;
-				case TokenType::mul:
-					res.numberValue = oper1.numberValue * oper2.numberValue;
-					res.tokenType = TokenType::number;
-					evalStack.push(res);
-					break;
-				case TokenType::div:
-					res.numberValue = oper2.numberValue / oper1.numberValue;
-					res.tokenType = TokenType::number;
-					evalStack.push(res);
-					break;
-				}
-			}
-		}
-		else if (t.tokenType == TokenType::function)
-		{
-			Token oper1 = evalStack.top(); evalStack.pop();
-			Token res;
-
-			if (t.stringValue == "log") {
-				res.numberValue = log(oper1.numberValue);
-				res.tokenType = TokenType::number;
-				evalStack.push(res);
-			}
-			else if (t.stringValue == "sin") {
-				res.numberValue = sin(oper1.numberValue);
-				res.tokenType = TokenType::number;
-				evalStack.push(res);
-			}
-			else if (t.stringValue == "cos") {
-				res.numberValue = cos(oper1.numberValue);
-				res.tokenType = TokenType::number;
-				evalStack.push(res);
-			}
-		}
-
-		iter2++;
-	}
-
-	vector<Token> vecOut;
-	while (evalStack.size() > 0)
-	{
-		vecOut.insert(begin(vecOut), evalStack.top());			// reversing order
-		evalStack.pop();
-	}
-
-	return vecOut;
-}
-
-void ExpressionEvaluator::reorderVariableMultiplication(vector<Token>& expr)
-{
-	for (int i = 0; i < expr.size(); i++)
-	{
-		Token& currToken = expr[i];
-
-		if (currToken.tokenType == TokenType::name && i < expr.size() - 1)
-		{
-			Token& nextToken = expr[i + 1];
-			if (nextToken.tokenType == TokenType::mul)
-			{
-				// switch positions
-				Token s = expr[i];
-				expr[i] = expr[i + 2];
-				expr[i + 2] = s;
-			}
-		}
-	}
-}
-
-void ExpressionEvaluator::sumNameCoefficients(vector<Token>& expr, double *outVarCoef, double *outRemainingNumberValue)
-{
-	*outVarCoef = 0.0;
-	*outRemainingNumberValue = 0.0;
-
-	for (int i = 0; i < expr.size(); i++)
-	{
-		Token& currToken = expr[i];
-
-		if (currToken.tokenType == TokenType::name)
-		{
-			double coef = currToken.numberValue;
-			if (i > 0)		// this means there is possibility there is a coefficient in front of name
-			{
-				Token& prevToken = expr[i - 1];
-				if (prevToken.tokenType == TokenType::mul)			// we have a coefficient in front
-				{
-					coef *= expr[i - 2].numberValue;
-					*outVarCoef += coef;
-				}
-				else if (prevToken.tokenType == TokenType::plus)			// it means we have a "+ x" expression
-					*outVarCoef += coef;
-				else if (prevToken.tokenType == TokenType::minus)			// it means we have a "- x" expression
-					*outVarCoef -= coef;
-			}
-			else				// this means we have a standalone "x" at the beggining
-				*outVarCoef += coef;
-		}
-		else if (currToken.tokenType == TokenType::number)
-		{
-			// lets see if this is a standalone number, or var coefficient
-			if (i == expr.size() - 1)							// last element in expression, certainly stand alone number
-			{
-				Token& prevToken = expr[i - 1];
-
-				if (prevToken.tokenType == TokenType::minus)
-					*outRemainingNumberValue -= currToken.numberValue;
-				else
-					*outRemainingNumberValue += currToken.numberValue;
-			}
-			else if (i == 0)
-			{
-				Token& nextToken = expr[i + 1];
-
-				if (nextToken.tokenType == TokenType::plus || nextToken.tokenType == TokenType::minus)
-					*outRemainingNumberValue += currToken.numberValue;
-			}
-			else
-			{
-				Token& prevToken = expr[i - 1];
-				Token& nextToken = expr[i + 1];
-
-				if ((prevToken.tokenType == TokenType::plus || prevToken.tokenType == TokenType::minus) &&
-					(nextToken.tokenType == TokenType::plus || nextToken.tokenType == TokenType::minus))
-				{
-					if (prevToken.tokenType == TokenType::minus)
-						*outRemainingNumberValue -= currToken.numberValue;
-					else
-						*outRemainingNumberValue += currToken.numberValue;
-				}
-			}
-		}
-	}
-}
-
 string	ExpressionEvaluator::getErrorMessage(CalculatorStatus inStatus)
 {
 	return _errorMessages[inStatus];
@@ -594,33 +329,12 @@ double ExpressionEvaluator::evaluate(string inputExpr, CalculatorStatus *outStat
 
 	tokens = tokenize(inputExpr);
 
-	if (isSimpleExpression(tokens))
-		return evaluateExpression(tokens, outStatus);
-
-	return 0.0;
+	return evaluateExpression(tokens, outStatus);
 }
 
 bool	 ExpressionEvaluator::isFunctionName(string s)
 {
 	return std::find(begin(_definedFunctions), end(_definedFunctions), s) != end(_definedFunctions);
-}
-
-bool		ExpressionEvaluator::isSimpleExpression(vector<Token> &vecTokens)
-{
-	// pass through all tokens and see if there is assign (=) token in list
-	auto foundAssign = std::find_if(begin(vecTokens), end(vecTokens), [](Token a)->bool {return a.tokenType == TokenType::assign; });
-
-	// if we found =, then it is NOT a simple expression
-	if (foundAssign != end(vecTokens))
-		return false;
-
-	// but, we have to check if there are variables in list of tokens, because that also means it is not a simple expression
-	auto foundVar = std::find_if(begin(vecTokens), end(vecTokens), [](Token a)->bool {return a.tokenType == TokenType::name; });
-
-	if (foundVar != end(vecTokens))
-		return false;
-
-	return true;
 }
 
 char ExpressionEvaluator::getOperatorChar(Token t)

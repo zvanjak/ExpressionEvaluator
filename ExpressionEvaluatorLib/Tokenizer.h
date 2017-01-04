@@ -22,7 +22,7 @@ enum class TokenType : char
 
 struct Token
 {
-	TokenType tokenType;
+	TokenType	tokenType;
 	string		stringValue;
 	double		numberValue;
 };
@@ -35,7 +35,7 @@ public:
 	Tokenizer(stringstream& s) : _inputStream{ &s } { _currentToken.tokenType = TokenType::end; }
 	~Tokenizer();
 
-	Token		getNext(vector<string> inFunctionNames);		// read and return next token
+	Token	getNext(vector<string> inFunctionNames);		// read and return next token
 	Token&	current();		// most recently read token
 
 private:
