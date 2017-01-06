@@ -54,6 +54,18 @@ namespace ScientificCalculatorTests
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::end, t.tokenType);
 		}
 
+		TEST_METHOD(Tokenizer_SimpleExpressionWithUnaryMinusTest)
+		{
+			std::stringstream s("-2+2");
+			Tokenizer tokenizer(s);
+			vector<string> defFunc;
+
+			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(-2.0, t.numberValue);
+			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::plus, t.tokenType);
+			t = tokenizer.getNext(defFunc);					Assert::AreEqual(2.0, t.numberValue);
+			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::end, t.tokenType);
+		}
+
 		TEST_METHOD(Tokenizer_SimpleExpressionTest_WithSpaces)
 		{
 			std::stringstream s("2   * 2");
