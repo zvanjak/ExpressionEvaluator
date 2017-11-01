@@ -88,7 +88,7 @@ public:
 		default:											// name, name =, function name or error
 			if (isalpha(ch)) {
 				_currentToken.stringValue = ch;
-				while (_inputStream->get(ch) && isalnum(ch))
+				while (_inputStream->get(ch) && (isalnum(ch) || ch == '_') )		// we can have _ in function and variable names
 					_currentToken.stringValue += ch;
 				_inputStream->putback(ch);
 

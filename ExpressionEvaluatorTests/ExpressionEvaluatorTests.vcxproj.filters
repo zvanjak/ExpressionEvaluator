@@ -38,5 +38,8 @@
     <ClCompile Include="UnaryMinusTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AddingUserDefFunctionsTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

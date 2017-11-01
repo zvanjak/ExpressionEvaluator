@@ -39,6 +39,14 @@ void	ExpressionEvaluator::initializeCalculator()
 	_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
 }
 
+bool ExpressionEvaluator::addUserDefinedFunction(string inName, FunctionOneParam inFunc)
+{
+	// TODO - check for function with that name already present
+	_defFunc[inName] = inFunc;
+
+	return true;
+}
+
 string	ExpressionEvaluator::driver(string inputExpr)
 {
 	string		result;

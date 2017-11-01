@@ -35,6 +35,10 @@ public:
 	ExpressionEvaluator();
 	~ExpressionEvaluator();
 
+	typedef double(*FunctionOneParam)(double);
+
+	bool			addUserDefinedFunction(string inName, FunctionOneParam);
+
 	string			driver(string inputExpression);
 
 	vector<Token>	tokenize(string inExpr);
@@ -47,9 +51,6 @@ public:
 	double			evaluate(string inputExpression, CalculatorStatus *outStatus);
 
 private:
-	typedef double(*FunctionOneParam)(double);
-	typedef double(*FunctionTwoParam)(double, double);
-
 	// TODO - što s funkcijama koje imaju više parametara?
 	std::unordered_map<string, FunctionOneParam> _defFunc;
 
