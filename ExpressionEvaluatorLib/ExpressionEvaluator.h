@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <list>
 #include <map>
+#include <unordered_map>
 
 #include "Tokenizer.h"
 
@@ -47,10 +47,15 @@ public:
 	double			evaluate(string inputExpression, CalculatorStatus *outStatus);
 
 private:
-	// TODO - zajedno s imenom funkcije, imati i pointer na funkciju koja to evaluira
+	typedef double(*FunctionOneParam)(double);
+	typedef double(*FunctionTwoParam)(double, double);
+
 	// TODO - što s funkcijama koje imaju više parametara?
-	vector<string>		_definedFunctions;		// { "log", "sin", "cos" };
+	std::unordered_map<string, FunctionOneParam> _defFunc;
+
 	vector<Operator>	_definedOperators;
+
+
 	map<CalculatorStatus, string>		_errorMessages;
 
 	void		initializeCalculator();

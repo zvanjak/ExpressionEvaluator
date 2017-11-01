@@ -47,7 +47,7 @@ namespace ScientificCalculatorTests
 		TEST_METHOD(Test_UnaryMinus_SimpleExpression) {
 			Assert::AreEqual(-4.0, _calculator.evaluate("-4", &outStatus));
 			Assert::AreEqual(0.0, _calculator.evaluate("-2+2", &outStatus));
-			Assert::AreEqual(-47.6544, _calculator.evaluate("-50+2.3456", &outStatus));
+			Assert::AreEqual(-50 + 2.3456, _calculator.evaluate("-50+2.3456", &outStatus));
 			Assert::AreEqual(-3.1, _calculator.evaluate("- 4.5 + 1.4", &outStatus));
 			Assert::AreEqual(-6.0, _calculator.evaluate("-2 * 3", &outStatus));
 			Assert::AreEqual(-5.0, _calculator.evaluate("-20 /4", &outStatus));

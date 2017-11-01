@@ -46,7 +46,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("2+2");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);			Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::plus, t.tokenType);
@@ -58,7 +58,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("-2+2");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);			Assert::AreEqual(TokenType::minus, t.tokenType);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(2.0, t.numberValue);
@@ -71,7 +71,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("2   * 2");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);				Assert::AreEqual(TokenType::mul, t.tokenType);
@@ -83,7 +83,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("x=2");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(TokenType::name, t.tokenType);
 			t = tokenizer.getNext(defFunc);				Assert::AreEqual(TokenType::assign, t.tokenType);
@@ -93,7 +93,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("x  = 2");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(TokenType::name, t.tokenType);
 			t = tokenizer.getNext(defFunc);				Assert::AreEqual(TokenType::assign, t.tokenType);
@@ -103,7 +103,7 @@ namespace ScientificCalculatorTests
 		{
 			std::stringstream s("3*(2+3)");
 			Tokenizer tokenizer(s);
-			vector<string> defFunc;
+			std::unordered_map<string, double(*)(double)> defFunc;
 
 			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(TokenType::number, t.tokenType);
 			t = tokenizer.getNext(defFunc);				Assert::AreEqual(TokenType::mul, t.tokenType);

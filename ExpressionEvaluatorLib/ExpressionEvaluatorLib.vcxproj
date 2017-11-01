@@ -136,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExpressionEvaluator.cpp" />
-    <ClCompile Include="Tokenizer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

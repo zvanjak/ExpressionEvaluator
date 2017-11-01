@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <stack>
+#include <math.h>
 
 using std::vector;
 using std::stack;
@@ -18,15 +19,16 @@ ExpressionEvaluator::~ExpressionEvaluator()
 
 void	ExpressionEvaluator::initializeCalculator()
 {
-	_definedFunctions.push_back("log");
-	_definedFunctions.push_back("sin");
-	_definedFunctions.push_back("cos");
+	_defFunc["sin"] = sin;
+	_defFunc["cos"] = cos;
+	_defFunc["log"] = log;
 
 	_definedOperators.push_back({ '+', 1, false, false });
 	_definedOperators.push_back({ '-', 1, false, false });
 	_definedOperators.push_back({ '~', 1, true,  false });
 	_definedOperators.push_back({ '*', 2, false, false });
 	_definedOperators.push_back({ '/', 2, false, false });
+	_definedOperators.push_back({ '^', 3, false, true });
 
 	_errorMessages[CalculatorStatus::STATUS_OK] = "OK";
 	_errorMessages[CalculatorStatus::SYNTAX_ERROR] = "Syntax error";
@@ -64,7 +66,7 @@ vector<Token> ExpressionEvaluator::tokenize(string inExpr)
 	Token t;
 	do
 	{
-		t = tokenizer.getNext(_definedFunctions);
+		t = tokenizer.getNext(_defFunc);
 		vecTokens.push_back(t);
 	} while (t.tokenType != TokenType::end);
 
@@ -119,7 +121,7 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 
 			stack.push(t);
 		}
-		else if (isTokenOperator(t))														//If the token is an operator, o1, then :
+		else if (Tokenizer::isTokenOperator(t))														//If the token is an operator, o1, then :
 		{
 			checkTransition(lastElem, t.tokenType, outStatus);
 
@@ -139,7 +141,7 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 
 				//	while there is an operator token, o2, at the top of the operator stack, and either
 				Token topStackToken = stack.top();
-				while (isTokenOperator(topStackToken))
+				while (Tokenizer::isTokenOperator(topStackToken))
 				{
 					Operator &o2 = getOperator(topStackToken);
 
@@ -183,7 +185,7 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 			//	If the stack runs out without finding a left parenthesis, then there are mismatched parentheses.
 			bool foundLeftParenth = false;
 			Token topStackToken = stack.top();
-			while (isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
+			while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
 			{
 				// TODO - write this cleaner!
 				stack.pop();
@@ -258,7 +260,7 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 
 		if (t.tokenType == TokenType::number || t.tokenType == TokenType::name)
 			evalStack.push(t);
-		else if (isTokenOperator(t))
+		else if (Tokenizer::isTokenOperator(t))
 		{
 			Token res;
 
@@ -301,6 +303,11 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 					res.tokenType = TokenType::number;
 					evalStack.push(res);
 					break;
+				case TokenType::pow:
+					res.numberValue = pow(oper2.numberValue, oper1.numberValue);
+					res.tokenType = TokenType::number;
+					evalStack.push(res);
+					break;
 				}
 			}
 		}
@@ -309,19 +316,10 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 			Token oper1 = evalStack.top(); evalStack.pop();
 			Token res;
 
-			// TODO - funkcije tražiti u definiranoj listi po imenu
-			if (t.stringValue == "log") {
-				res.numberValue = log(oper1.numberValue);
-				res.tokenType = TokenType::number;
-				evalStack.push(res);
-			}
-			else if (t.stringValue == "sin") {
-				res.numberValue = sin(oper1.numberValue);
-				res.tokenType = TokenType::number;
-				evalStack.push(res);
-			}
-			else if (t.stringValue == "cos") {
-				res.numberValue = cos(oper1.numberValue);
+			auto iter = _defFunc.find(t.stringValue);
+			if( iter != end(_defFunc))
+			{
+				res.numberValue = iter->second(oper1.numberValue);
 				res.tokenType = TokenType::number;
 				evalStack.push(res);
 			}
@@ -360,7 +358,11 @@ double ExpressionEvaluator::evaluate(string inputExpr, CalculatorStatus *outStat
 
 bool	 ExpressionEvaluator::isFunctionName(string s)
 {
-	return std::find(begin(_definedFunctions), end(_definedFunctions), s) != end(_definedFunctions);
+	auto iter = _defFunc.find(s);
+	if (iter != end(_defFunc))
+		return true;
+	else
+		return false;
 }
 
 char ExpressionEvaluator::getOperatorChar(Token t)
@@ -372,6 +374,7 @@ char ExpressionEvaluator::getOperatorChar(Token t)
 	case TokenType::unary_minus: return '~';
 	case TokenType::mul: return '*';
 	case TokenType::div: return '/';
+	case TokenType::pow: return '^';
 	default: return 0;
 	}
 }
@@ -388,15 +391,15 @@ void ExpressionEvaluator::checkTransition(TokenType from, TokenType to, Calculat
 {
 	if (from == TokenType::end && (to == TokenType::number || to == TokenType::name || to == TokenType::function || to == TokenType::left || to == TokenType::minus))
 		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::number && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::right || to == TokenType::end))
+	else if (from == TokenType::number && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
 		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::name && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::right || to == TokenType::end))
+	else if (from == TokenType::name && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
 		*outStatus = CalculatorStatus::STATUS_OK;
 	else if (from == TokenType::function && (to == TokenType::left))
 		*outStatus = CalculatorStatus::STATUS_OK;
 	else if (from == TokenType::left && (to == TokenType::number || to == TokenType::left || to == TokenType::name || to == TokenType::function || to == TokenType::minus))
 		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::right && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::right || to == TokenType::end))
+	else if (from == TokenType::right && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
 		*outStatus = CalculatorStatus::STATUS_OK;
 	else if (from == TokenType::plus && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
 		*outStatus = CalculatorStatus::STATUS_OK;
@@ -407,6 +410,8 @@ void ExpressionEvaluator::checkTransition(TokenType from, TokenType to, Calculat
 	else if (from == TokenType::mul && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
 		*outStatus = CalculatorStatus::STATUS_OK;
 	else if (from == TokenType::div && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
+		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::pow && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
 		*outStatus = CalculatorStatus::STATUS_OK;
 	else
 		*outStatus = CalculatorStatus::SYNTAX_ERROR;

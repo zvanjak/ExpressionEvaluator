@@ -26,8 +26,6 @@ namespace Microsoft {	namespace VisualStudio {	namespace CppUnitTestFramework
 	}
 }
 
-
-
 namespace ScientificCalculatorTests
 {		
 	TEST_CLASS(BasicExpressionsTest)
@@ -55,9 +53,28 @@ namespace ScientificCalculatorTests
 			Assert::AreEqual(20.0, _calculator.evaluate("2 * (2+ 3)*2", &outStatus));
 		}
 
+		TEST_METHOD(Test_ExpressionWithPowerOperation) {
+			Assert::AreEqual(pow(2, 3), _calculator.evaluate("2^3", &outStatus));
+			Assert::AreEqual(-pow(2, 3), _calculator.evaluate("-2^3", &outStatus));
+			Assert::AreEqual(pow(-2, 3), _calculator.evaluate("(-2)^3", &outStatus));
+			Assert::AreEqual(pow(2, -3), _calculator.evaluate("2^(-3)", &outStatus));
+			Assert::AreEqual(pow(2,3), _calculator.evaluate("2^3", &outStatus));
+		}
+
+		TEST_METHOD(Test_ExpressionWithPowerOperationComplex) {
+			Assert::AreEqual(pow(2,(3 - 10 / 5.25)) / (pow(-2, 3) * 2 + 1), _calculator.evaluate("2^(3 - 10/5.25)/((-2)^3*2+1)", &outStatus));
+		}
+
 		TEST_METHOD(Test_SimpleFunction) {
 			Assert::AreEqual(log(10), _calculator.evaluate("log(10)", &outStatus));
 			Assert::AreEqual(sin(2), _calculator.evaluate("sin(2)", &outStatus));
+			Assert::AreEqual(cos(2), _calculator.evaluate("cos(2)", &outStatus));
+		}
+
+
+		TEST_METHOD(Test_ComplexFunction) {
+			Assert::AreEqual(log(10)*(2+sin(1.5)/cos(-1.58)), _calculator.evaluate("log(10)*(2+sin(1.5)/cos(-1.58))", &outStatus));
+			Assert::AreEqual(10.5/(1+sin(2/(-4.5*0.78))), _calculator.evaluate("10.5/(1+sin(2/(-4.5*0.78)))", &outStatus));
 			Assert::AreEqual(cos(2), _calculator.evaluate("cos(2)", &outStatus));
 		}
 
@@ -97,6 +114,10 @@ namespace ScientificCalculatorTests
 			Assert::AreEqual(CalculatorStatus::SYNTAX_ERROR, outStatus);
 		}
 
+		TEST_METHOD(Test_SyntaxError7) {
+			double res = _calculator.evaluate("2^-3", &outStatus);
+			Assert::AreEqual(CalculatorStatus::SYNTAX_ERROR, outStatus);
+		}
 
 	private:
 		ExpressionEvaluator _calculator;
