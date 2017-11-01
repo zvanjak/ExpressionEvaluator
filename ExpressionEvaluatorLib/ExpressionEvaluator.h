@@ -14,6 +14,7 @@ struct Operator
 {
 	char	_name;
 	int		_priority;
+	bool	_isUnary;
 	bool	_isRightAssociative;
 };
 
@@ -46,6 +47,8 @@ public:
 	double			evaluate(string inputExpression, CalculatorStatus *outStatus);
 
 private:
+	// TODO - zajedno s imenom funkcije, imati i pointer na funkciju koja to evaluira
+	// TODO - što s funkcijama koje imaju više parametara?
 	vector<string>		_definedFunctions;		// { "log", "sin", "cos" };
 	vector<Operator>	_definedOperators;
 	map<CalculatorStatus, string>		_errorMessages;

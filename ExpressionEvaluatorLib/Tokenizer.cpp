@@ -10,6 +10,7 @@ bool isTokenOperator(Token &t)
 {
 	return  t.tokenType == TokenType::plus ||
 		t.tokenType == TokenType::minus ||
+		t.tokenType == TokenType::unary_minus ||
 		t.tokenType == TokenType::mul ||
 		t.tokenType == TokenType::div;
 }
@@ -41,6 +42,7 @@ Token Tokenizer::getNext(vector<string> inFunctionNames)
 	case '/':
 	case '+':
 	case '-':
+//	case '~':		// actually, we don't need this here - we will use ~ only in the output token string
 	case '(':
 	case ')':
 	case '=':

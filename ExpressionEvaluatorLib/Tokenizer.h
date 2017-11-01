@@ -13,6 +13,7 @@ enum class TokenType : char
 	name, number, function, end,
 	plus = '+',
 	minus = '-',
+	unary_minus = '~',
 	mul = '*',
 	div = '/',
 	left = '(',

@@ -48,7 +48,7 @@ namespace ScientificCalculatorTests
 			Tokenizer tokenizer(s);
 			vector<string> defFunc;
 
-			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(2.0, t.numberValue);
+			Token t = tokenizer.getNext(defFunc);			Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::plus, t.tokenType);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::end, t.tokenType);
@@ -60,7 +60,8 @@ namespace ScientificCalculatorTests
 			Tokenizer tokenizer(s);
 			vector<string> defFunc;
 
-			Token t = tokenizer.getNext(defFunc);		Assert::AreEqual(-2.0, t.numberValue);
+			Token t = tokenizer.getNext(defFunc);			Assert::AreEqual(TokenType::minus, t.tokenType);
+			t = tokenizer.getNext(defFunc);					Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::plus, t.tokenType);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(2.0, t.numberValue);
 			t = tokenizer.getNext(defFunc);					Assert::AreEqual(TokenType::end, t.tokenType);
