@@ -119,6 +119,11 @@ namespace ScientificCalculatorTests
 			Assert::AreEqual(CalculatorStatus::SYNTAX_ERROR, outStatus);
 		}
 
+		TEST_METHOD(Test_SyntaxError8) {
+			double res = _calculator.evaluate("2+5-", &outStatus);
+			Assert::AreEqual(CalculatorStatus::SYNTAX_ERROR, outStatus);
+		}
+
 	private:
 		ExpressionEvaluator _calculator;
 		CalculatorStatus outStatus;

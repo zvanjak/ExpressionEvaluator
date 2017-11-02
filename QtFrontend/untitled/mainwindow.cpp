@@ -26,3 +26,10 @@ void MainWindow::on_cmdEvaluate_clicked()
 
     ui->txtResult->setText(qstr);
 }
+
+void MainWindow::on_editExpression_returnPressed()
+{
+    on_cmdEvaluate_clicked();
+
+    ui->editExpression->setText("");
+}

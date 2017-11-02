@@ -18,6 +18,8 @@ public:
 private slots:
     void on_cmdEvaluate_clicked();
 
+    void on_editExpression_returnPressed();
+
 private:
     Ui::MainWindow *ui;
 };

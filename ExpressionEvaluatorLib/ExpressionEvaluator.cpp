@@ -285,7 +285,12 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 			else
 			{
 				// take two element from top of the evaluation stack and perform operation
-				// TODO - provjerit ida li uopæe postoje ti elementi
+				if (evalStack.size() < 2)
+				{
+					*outStatus = CalculatorStatus::SYNTAX_ERROR;
+					return 0.0;
+				}
+
 				Token oper1 = evalStack.top(); evalStack.pop();
 				Token oper2 = evalStack.top(); evalStack.pop();
 
