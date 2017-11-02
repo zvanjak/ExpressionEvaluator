@@ -12,3 +12,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::on_cmdEvaluate_clicked()
+{
+    ui->txtResult->setText("Prdo");
+}
