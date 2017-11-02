@@ -5,10 +5,12 @@
 #include <unordered_map>
 
 #include "Tokenizer.h"
+#include <stack>
 
 using std::string;
 using std::vector;
 using std::map;
+using std::stack;
 
 struct Operator
 {
@@ -55,7 +57,6 @@ private:
 	std::unordered_map<string, FunctionOneParam> _defFunc;
 
 	vector<Operator>	_definedOperators;
-
 
 	map<CalculatorStatus, string>		_errorMessages;
 
