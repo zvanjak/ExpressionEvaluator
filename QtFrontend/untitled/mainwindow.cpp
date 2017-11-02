@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "../../ExpressionEvaluatorLib/ExpressionEvaluatorSingleHeader.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,5 +17,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_cmdEvaluate_clicked()
 {
-    ui->txtResult->setText("Prdo");
+    QString expression = ui->editExpression->text();
+
+    ExpressionEvaluator calculator;
+
+    string result = calculator.driver(expression.toStdString());
+    QString qstr = QString::fromStdString(result);
+
+    ui->txtResult->setText(qstr);
 }
