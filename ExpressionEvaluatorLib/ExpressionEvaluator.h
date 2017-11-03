@@ -12,6 +12,11 @@ using std::vector;
 using std::map;
 using std::stack;
 
+double simple_two_param_func(double x, double y)
+{
+	return x + y;
+}
+
 struct Operator
 {
 	char	_name;
@@ -31,6 +36,8 @@ enum class CalculatorStatus
 	INIFINITY_VARIABLE_VALUE
 };
 
+
+
 class ExpressionEvaluator
 {
 public:
@@ -39,7 +46,8 @@ public:
 
 	typedef double(*FunctionOneParam)(double);
 
-	bool			addUserDefinedFunction(string inName, FunctionOneParam);
+	//bool			addUserDefinedFunction(string inName, FunctionOneParam);
+	bool			addUserDefinedFunction(string inName, DefinedFunction *inFunc);
 
 	string			driver(string inputExpression);
 
@@ -54,7 +62,7 @@ public:
 
 private:
 	// TODO - što s funkcijama koje imaju više parametara?
-	std::unordered_map<string, FunctionOneParam> _defFunc;
+	std::unordered_map<string, DefinedFunction *> _defFunc;
 
 	vector<Operator>	_definedOperators;
 

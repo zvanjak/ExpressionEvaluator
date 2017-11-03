@@ -130,6 +130,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DefinedFunction.h" />
     <ClInclude Include="ExpressionEvaluator.h" />
     <ClInclude Include="ExpressionEvaluatorSingleHeader.h" />
     <ClInclude Include="targetver.h" />

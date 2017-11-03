@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "..\ExpressionEvaluatorLib/ExpressionEvaluator.h"
+#include "../ExpressionEvaluatorLib/ExpressionEvaluator.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -28,27 +28,22 @@ namespace Microsoft {
 	}
 }
 
-double simple_func(double a)
-{
-	return a * 2;
-}
 namespace ScientificCalculatorTests
 {
-	TEST_CLASS(AddingUserDefFunctionsTests)
+	TEST_CLASS(MultiParameterFunctionsTests)
 	{
 	public:
 
-		TEST_METHOD(Test_AddSimpleFunction) {
-			_calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simple_func));
-
-			Assert::AreEqual(4.0, _calculator.evaluate("simpleFunc(2)", &outStatus));
+		TEST_METHOD(Test_SimpleTwoParamFunction) {
+			Assert::AreEqual(4.0, _calculator.evaluate("4", &outStatus));
+			Assert::AreEqual(4.0, _calculator.evaluate("2+2", &outStatus));
+			Assert::AreEqual(52.3456, _calculator.evaluate("50+2.3456", &outStatus));
+			Assert::AreEqual(3.1, _calculator.evaluate("4.5 - 1.4", &outStatus));
+			Assert::AreEqual(6.0, _calculator.evaluate("2 * 3", &outStatus));
+			Assert::AreEqual(5.0, _calculator.evaluate("20 /4", &outStatus));
 		}
 
-		TEST_METHOD(Test_AddSimpleFunction2) {
-			_calculator.addUserDefinedFunction("simple_func", new DefinedFunctionOneParam(simple_func));
-
-			Assert::AreEqual(4.0, _calculator.evaluate("simple_func(2)", &outStatus));
-		}
+		
 
 	private:
 		ExpressionEvaluator _calculator;

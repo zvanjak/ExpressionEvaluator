@@ -15,13 +15,14 @@ ExpressionEvaluator::ExpressionEvaluator()
 
 ExpressionEvaluator::~ExpressionEvaluator()
 {
+	// TODO - delete all DefineedFunctions
 }
 
 void	ExpressionEvaluator::initializeCalculator()
 {
-	_defFunc["sin"] = sin;
-	_defFunc["cos"] = cos;
-	_defFunc["log"] = log;
+	_defFunc["sin"] = new DefinedFunctionOneParam(sin);
+	_defFunc["cos"] = new DefinedFunctionOneParam(cos);
+	_defFunc["log"] = new DefinedFunctionOneParam(log);
 
 	_definedOperators.push_back({ '+', 1, false, false });
 	_definedOperators.push_back({ '-', 1, false, false });
@@ -39,7 +40,15 @@ void	ExpressionEvaluator::initializeCalculator()
 	_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
 }
 
-bool ExpressionEvaluator::addUserDefinedFunction(string inName, FunctionOneParam inFunc)
+//bool ExpressionEvaluator::addUserDefinedFunction(string inName, FunctionOneParam inFunc)
+//{
+//	// TODO - check for function with that name already present
+//	_defFunc[inName] = inFunc;
+//
+//	return true;
+//}
+
+bool ExpressionEvaluator::addUserDefinedFunction(string inName, DefinedFunction *inFunc)
 {
 	// TODO - check for function with that name already present
 	_defFunc[inName] = inFunc;
@@ -326,13 +335,26 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 		}
 		else if (t.tokenType == TokenType::function)
 		{
+			// TODO - check if there is actually an operand on stack
 			Token oper1 = evalStack.top(); evalStack.pop();
 			Token res;
 
 			auto iter = _defFunc.find(t.stringValue);
 			if( iter != end(_defFunc))
 			{
-				res.numberValue = iter->second(oper1.numberValue);
+				switch(iter->second->_numParam)
+				{
+				case 1: 
+				{
+					DefinedFunctionOneParam *func = dynamic_cast<DefinedFunctionOneParam *> (iter->second);
+					res.numberValue = func->_ptrFunc(oper1.numberValue);
+					break;
+				}
+				case 2:
+					break;
+				case 3:
+					break;
+				}
 				res.tokenType = TokenType::number;
 				evalStack.push(res);
 			}
