@@ -24,3 +24,18 @@ public:
 
 	double(*_ptrFunc)(double);
 };
+
+class DefinedFunctionTwoParam : public DefinedFunction
+{
+public:
+	DefinedFunctionTwoParam() : DefinedFunction(2) { }
+	DefinedFunctionTwoParam(double(*inFunc)(double, double)) : DefinedFunction(2) { _ptrFunc = inFunc; }
+
+	DefinedFunctionTwoParam& operator=(DefinedFunctionTwoParam &b)
+	{
+		_numParam = 2;
+		_ptrFunc = b._ptrFunc;
+	}
+
+	double(*_ptrFunc)(double, double);
+};

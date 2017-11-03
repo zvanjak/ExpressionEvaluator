@@ -12,7 +12,7 @@ using std::vector;
 
 enum class TokenType : char
 {
-	name, number, function, end,
+	name, number, function, comma, end,
 	plus = '+',
 	minus = '-',
 	unary_minus = '~',
@@ -61,6 +61,8 @@ public:
 		{
 		case 0:
 			return _currentToken = { TokenType::end }; // assign and return
+		case ',':
+			return _currentToken = { TokenType::comma }; // assign and return
 		case '^':
 		case '*':
 		case '/':

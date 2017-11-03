@@ -124,6 +124,13 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 
 			output.push_back(t);
 		}
+		else if (t.tokenType == TokenType::comma)											//If the token is a comma ...
+		{
+			checkTransition(lastElem, TokenType::comma, outStatus);
+			lastElem = TokenType::comma;
+
+			// do nothing :)
+		}
 		else if (t.tokenType == TokenType::name)											//If the token is a function token, then push it onto the stack.
 		{
 			checkTransition(lastElem, TokenType::name, outStatus);
@@ -277,6 +284,10 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 
 		if (t.tokenType == TokenType::number || t.tokenType == TokenType::name)
 			evalStack.push(t);
+		else if(t.tokenType == TokenType::comma)
+		{
+			// do nothing :)
+		}
 		else if (Tokenizer::isTokenOperator(t))
 		{
 			Token res;
@@ -351,7 +362,13 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 					break;
 				}
 				case 2:
+				{
+					Token oper2 = evalStack.top(); evalStack.pop();
+
+					DefinedFunctionTwoParam *func = dynamic_cast<DefinedFunctionTwoParam *> (iter->second);
+					res.numberValue = func->_ptrFunc(oper1.numberValue, oper2.numberValue);
 					break;
+				}
 				case 3:
 					break;
 				}
@@ -424,30 +441,19 @@ Operator&		ExpressionEvaluator::getOperator(Token t)
 
 void ExpressionEvaluator::checkTransition(TokenType from, TokenType to, CalculatorStatus *outStatus)
 {
-	if (from == TokenType::end && (to == TokenType::number || to == TokenType::name || to == TokenType::function || to == TokenType::left || to == TokenType::minus))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::number && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::name && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::function && (to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::left && (to == TokenType::number || to == TokenType::left || to == TokenType::name || to == TokenType::function || to == TokenType::minus))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::right && (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::plus && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::minus && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::unary_minus && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::mul && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::div && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
-	else if (from == TokenType::pow && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))
-		*outStatus = CalculatorStatus::STATUS_OK;
+	if (from == TokenType::end && (to == TokenType::number || to == TokenType::name || to == TokenType::function || to == TokenType::left || to == TokenType::minus))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::number	&& (to == TokenType::comma || to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::name	&& (to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::function && (to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::comma	&& (to == TokenType::number || to == TokenType::minus || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::left	&& (to == TokenType::number || to == TokenType::left || to == TokenType::name || to == TokenType::function || to == TokenType::minus))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::right	&& (to == TokenType::comma || to == TokenType::plus || to == TokenType::minus || to == TokenType::mul || to == TokenType::div || to == TokenType::pow || to == TokenType::right || to == TokenType::end))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::plus	&& (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::minus	&& (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::unary_minus && (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::mul		&& (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::div		&& (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
+	else if (from == TokenType::pow		&& (to == TokenType::name || to == TokenType::number || to == TokenType::function || to == TokenType::left))		*outStatus = CalculatorStatus::STATUS_OK;
 	else
 		*outStatus = CalculatorStatus::SYNTAX_ERROR;
 }

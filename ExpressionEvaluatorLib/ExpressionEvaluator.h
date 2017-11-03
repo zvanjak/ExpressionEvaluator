@@ -12,11 +12,6 @@ using std::vector;
 using std::map;
 using std::stack;
 
-double simple_two_param_func(double x, double y)
-{
-	return x + y;
-}
-
 struct Operator
 {
 	char	_name;
