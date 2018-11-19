@@ -15,7 +15,7 @@ ExpressionEvaluator::ExpressionEvaluator()
 
 ExpressionEvaluator::~ExpressionEvaluator()
 {
-	// TODO - delete all DefineedFunctions
+	// TODO - delete all DefinedFunctions
 }
 
 void	ExpressionEvaluator::initializeCalculator()
