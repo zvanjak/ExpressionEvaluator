@@ -3,7 +3,15 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
+#add_subdirectory(src)
+
+include_directories(include)
+
+file(GLOB SOURCES src/Function.cpp)
+
 # Add source to this project's executable.
-add_library (TestCMake "TestCMake.cpp" "TestCMake.h")
+add_library (TestCMakeLib ${SOURCES} )
+
+add_executable(TestCMake "TestCmake.cpp" ${SOURCES})
 
 # TODO: Add tests and install targets if needed.

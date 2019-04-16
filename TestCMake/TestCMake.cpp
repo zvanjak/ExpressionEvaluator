@@ -3,10 +3,14 @@
 
 #include "TestCMake.h"
 
-using namespace std;
+#include "Function.h"
 
-int func()
+//#define CATCH_CONFIG_MAIN
+
+int main()
 {
-	cout << "Hello CMake." << endl;
-	return 0;
+	int c = func(2, 3);
+
+	std::cout << c;
 }
+
