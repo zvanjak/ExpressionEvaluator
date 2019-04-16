@@ -12,7 +12,7 @@ include_directories(include)
 file(GLOB SOURCES src/Function.cpp)
 file(GLOB TESTS tests/FunctionTests.cpp)
 
-#add_library (TestCMakeLib ${SOURCES} )
+add_library (TestCMakeLib ${SOURCES} )
 
 add_executable(TestCMakeTests "TestCmake.cpp" ${TESTS} ${SOURCES})
 target_link_libraries(TestCMakeTests Catch)
