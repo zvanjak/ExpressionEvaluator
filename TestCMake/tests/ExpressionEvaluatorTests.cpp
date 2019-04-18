@@ -2,12 +2,7 @@
 
 #include "../catch/catch.hpp"
 
-#include "Function.h"
 #include "ExpressionEvaluator.h"
-
-TEST_CASE("factorials are computed", "[factorial]") {
-	REQUIRE(func(1,1) == 2);
-}
 
 TEST_CASE("Test_SimpleExpression", "[simple]") {
 	ExpressionEvaluator _calculator;

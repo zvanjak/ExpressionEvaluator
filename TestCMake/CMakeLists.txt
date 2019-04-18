@@ -9,12 +9,12 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
 include_directories(include)
 
-file(GLOB SOURCES src/Function.cpp src/ExpressionEvaluator.cpp)
-file(GLOB TESTS tests/FunctionTests.cpp)
+file(GLOB SOURCES src/ExpressionEvaluator.cpp)
+file(GLOB TESTS tests/ExpressionEvaluatorTests.cpp)
 
 add_library (ExpressionEvaluatorLib ${SOURCES} )
 
-add_executable(ExpressionEvaluatorTests "TestCmake.cpp" ${TESTS} ${SOURCES})
+add_executable(ExpressionEvaluatorTests "main.cpp" ${TESTS} ${SOURCES})
 target_link_libraries(ExpressionEvaluatorTests Catch)
 
 # TODO: Add tests and install targets if needed.
