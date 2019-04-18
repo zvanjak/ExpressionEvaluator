@@ -10,7 +10,7 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 include_directories(include)
 
 file(GLOB SOURCES src/ExpressionEvaluator.cpp)
-file(GLOB TESTS tests/BasicExpressionsTests.cpp)
+file(GLOB TESTS tests/BasicExpressionsTests.cpp tests/ErrorsTests.cpp)
 
 add_library (ExpressionEvaluatorLib ${SOURCES} )
 
