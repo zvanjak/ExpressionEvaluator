@@ -208,37 +208,40 @@ vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, Calc
 			//	If the token at the top of the stack is a function token, pop it onto the output queue.
 			//	If the stack runs out without finding a left parenthesis, then there are mismatched parentheses.
 			bool foundLeftParenth = false;
-			Token topStackToken = stack.top();
-			while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
+			if (stack.size() > 0)		
 			{
-				// TODO - write this cleaner!
-				stack.pop();
+				Token topStackToken = stack.top();
+				while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
+				{
+					// TODO - write this cleaner!
+					stack.pop();
 
-				if (topStackToken.tokenType != TokenType::left)
-					output.push_back(topStackToken);
-				else
+					if (topStackToken.tokenType != TokenType::left)
+						output.push_back(topStackToken);
+					else
+						foundLeftParenth = true;
+
+					if (stack.size() > 0)
+						topStackToken = stack.top();
+					else
+						break;
+				}
+
+				// if everything is OK, left parenthesis should be on top of stack 
+				if (topStackToken.tokenType == TokenType::left)
+				{
+					stack.pop();
 					foundLeftParenth = true;
 
-				if (stack.size() > 0)
-					topStackToken = stack.top();
-				else
-					break;
-			}
-
-			// if everything is OK, left parenthesis should be on top of stack 
-			if (topStackToken.tokenType == TokenType::left)
-			{
-				stack.pop();
-				foundLeftParenth = true;
-
-				// now we have to check if function is on the top of the stack
-				if (stack.size() > 0)
-				{
-					topStackToken = stack.top();
-					if (topStackToken.tokenType == TokenType::function)
+					// now we have to check if function is on the top of the stack
+					if (stack.size() > 0)
 					{
-						stack.pop();
-						output.push_back(topStackToken);
+						topStackToken = stack.top();
+						if (topStackToken.tokenType == TokenType::function)
+						{
+							stack.pop();
+							output.push_back(topStackToken);
+						}
 					}
 				}
 			}
