@@ -6,9 +6,12 @@ TEST_CASE("Test_MismatchedParenthesis", "[errors]")
 {
 	ExpressionEvaluator _calculator;
 
-	string res = _calculator.driver("2 + (3*5");
-
-	REQUIRE(_calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS) == res);
+	REQUIRE(_calculator.driver("2 + (3*5") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
+	REQUIRE(_calculator.driver("2) + (3*5") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
+	//REQUIRE(_calculator.driver("2 + 3+5)") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
+	//REQUIRE(_calculator.driver("(2 + sin(3)*4.5) + (3*5") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
+	//REQUIRE(_calculator.driver(")") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
+	//REQUIRE(_calculator.driver("(") == _calculator.getErrorMessage(CalculatorStatus::MISMATCHED_PARENTHESIS));
 }
 
 TEST_CASE("Test_SyntaxError", "[errors]")
