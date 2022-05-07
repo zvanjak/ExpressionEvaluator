@@ -302,51 +302,6 @@ double ExpressionEvaluator::evaluateRPN(vector<Token> output, CalculatorStatus *
 	return 0.0;
 }
 
-string	ExpressionEvaluator::getErrorMessage(CalculatorStatus inStatus)
-{
-	return _errorMessages[inStatus];
-}
-
-// Function used during development of simple expression evaluator. Surpased by "driver" function (left in code because of a lot of tests that use its interface)
-double ExpressionEvaluator::evaluate(string inputExpr, CalculatorStatus *outStatus)
-{
-	vector<Token> tokens;
-
-	tokens = tokenize(inputExpr);
-
-	return evaluateExpression(tokens, outStatus);
-}
-
-bool	 ExpressionEvaluator::isFunctionName(string s)
-{
-	auto iter = _defFunc.find(s);
-	if (iter != end(_defFunc))
-		return true;
-	else
-		return false;
-}
-
-char ExpressionEvaluator::getOperatorChar(Token t)
-{
-	switch (t.tokenType)
-	{
-	case TokenType::plus: return '+';
-	case TokenType::minus: return '-';
-	case TokenType::unary_minus: return '~';
-	case TokenType::mul: return '*';
-	case TokenType::div: return '/';
-	case TokenType::pow: return '^';
-	default: return 0;
-	}
-}
-
-Operator&		ExpressionEvaluator::getOperator(Token t)
-{
-	char operName = getOperatorChar(t);
-	auto findOper = std::find_if(begin(_definedOperators), end(_definedOperators), [operName](Operator &o) { return o._name == operName; });
-
-	return *findOper;
-}
 
 void ExpressionEvaluator::checkTransition(TokenType from, TokenType to, CalculatorStatus *outStatus)
 {

@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <stack>
 #include <map>
 #include <unordered_map>
 
 #include "Tokenizer.h"
-#include <stack>
+
 
 using std::string;
 using std::vector;
@@ -32,9 +33,16 @@ enum class CalculatorStatus
 };
 
 
-
 class ExpressionEvaluator
 {
+private:
+	// TODO - što s funkcijama koje imaju više parametara?
+	std::unordered_map<string, DefinedFunction*> _defFunc;
+
+	vector<Operator>	_definedOperators;
+
+	map<CalculatorStatus, string>		_errorMessages;
+
 public:
 	ExpressionEvaluator()
 	{
@@ -83,7 +91,7 @@ public:
 		return vecTokens;
 	}
 
-	double	evaluateExpression(vector<Token>& vecTokens, CalculatorStatus* outStatus)
+	double				evaluateExpression(vector<Token>& vecTokens, CalculatorStatus* outStatus)
 	{
 		vector<Token> output = transformToRPN(vecTokens, outStatus);
 
@@ -94,20 +102,24 @@ public:
 	}
 
 	vector<Token>	transformToRPN(vector<Token> &vecTokens, CalculatorStatus *outStatus);
-	double			evaluateRPN(vector<Token> output, CalculatorStatus *outStatus);
+	double				evaluateRPN(vector<Token> output, CalculatorStatus *outStatus);
 
-	string			getErrorMessage(CalculatorStatus inStatus);
+	string	getErrorMessage(CalculatorStatus inStatus)
+	{
+		return _errorMessages[inStatus];
+	}
 
-	double			evaluate(string inputExpression, CalculatorStatus *outStatus);
+	// Function used during development of simple expression evaluator. Surpased by "driver" function (left in code because of a lot of tests that use its interface)
+	double evaluate(string inputExpr, CalculatorStatus* outStatus)
+	{
+		vector<Token> tokens;
+
+		tokens = tokenize(inputExpr);
+
+		return evaluateExpression(tokens, outStatus);
+	}
 
 private:
-	// TODO - što s funkcijama koje imaju više parametara?
-	std::unordered_map<string, DefinedFunction *> _defFunc;
-
-	vector<Operator>	_definedOperators;
-
-	map<CalculatorStatus, string>		_errorMessages;
-
 	void	initializeCalculator()
 	{
 		_defFunc["sin"] = new DefinedFunctionOneParam(sin);
@@ -130,10 +142,38 @@ private:
 		_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
 	}
 
+	bool	 isFunctionName(string s)
+	{
+		auto iter = _defFunc.find(s);
+		if (iter != end(_defFunc))
+			return true;
+		else
+			return false;
+	}
+
+	char getOperatorChar(Token t)
+	{
+		switch (t.tokenType)
+		{
+		case TokenType::plus: return '+';
+		case TokenType::minus: return '-';
+		case TokenType::unary_minus: return '~';
+		case TokenType::mul: return '*';
+		case TokenType::div: return '/';
+		case TokenType::pow: return '^';
+		default: return 0;
+		}
+	}
+
+	Operator& getOperator(Token t)
+	{
+		char operName = getOperatorChar(t);
+		auto findOper = std::find_if(begin(_definedOperators), end(_definedOperators), [operName](Operator& o) { return o._name == operName; });
+
+		return *findOper;
+	}
+
 	void		checkTransition(TokenType from, TokenType to, CalculatorStatus *outStatus);
 
-	bool		isFunctionName(string s);
-	char		getOperatorChar(Token t);
-	Operator&	getOperator(Token t);
 };
 
