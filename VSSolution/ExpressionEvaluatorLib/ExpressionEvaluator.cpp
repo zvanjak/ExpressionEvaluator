@@ -8,53 +8,6 @@
 using std::vector;
 using std::stack;
 
-ExpressionEvaluator::ExpressionEvaluator()
-{
-	initializeCalculator();
-}
-
-ExpressionEvaluator::~ExpressionEvaluator()
-{
-	// TODO - delete all DefinedFunctions
-}
-
-void	ExpressionEvaluator::initializeCalculator()
-{
-	_defFunc["sin"] = new DefinedFunctionOneParam(sin);
-	_defFunc["cos"] = new DefinedFunctionOneParam(cos);
-	_defFunc["log"] = new DefinedFunctionOneParam(log);
-
-	_definedOperators.push_back({ '+', 1, false, false });
-	_definedOperators.push_back({ '-', 1, false, false });
-	_definedOperators.push_back({ '~', 1, true,  false });
-	_definedOperators.push_back({ '*', 2, false, false });
-	_definedOperators.push_back({ '/', 2, false, false });
-	_definedOperators.push_back({ '^', 3, false, true });
-
-	_errorMessages[CalculatorStatus::STATUS_OK] = "OK";
-	_errorMessages[CalculatorStatus::SYNTAX_ERROR] = "Syntax error";
-	_errorMessages[CalculatorStatus::MISMATCHED_PARENTHESIS] = "Mismatched parenthesis";
-	_errorMessages[CalculatorStatus::ERROR_IN_CALCULATION] = "Error during calculation";
-	_errorMessages[CalculatorStatus::NO_EQUAL_SIGN_IN_EQUATION] = "Missing equal sign in equation";
-	_errorMessages[CalculatorStatus::NO_VAR_IN_EQUATION] = "No variable in equation";
-	_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
-}
-
-//bool ExpressionEvaluator::addUserDefinedFunction(string inName, FunctionOneParam inFunc)
-//{
-//	// TODO - check for function with that name already present
-//	_defFunc[inName] = inFunc;
-//
-//	return true;
-//}
-
-bool ExpressionEvaluator::addUserDefinedFunction(string inName, DefinedFunction *inFunc)
-{
-	// TODO - check for function with that name already present
-	_defFunc[inName] = inFunc;
-
-	return true;
-}
 
 string	ExpressionEvaluator::driver(string inputExpr)
 {
