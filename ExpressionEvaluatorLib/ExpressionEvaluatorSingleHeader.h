@@ -51,7 +51,7 @@ public:
 			t.tokenType == TokenType::pow;
 	}
 
-	Token Tokenizer::getNext(std::unordered_map<string, double(*)(double)> inFunctionNames)
+	Token getNext(std::unordered_map<string, double(*)(double)> inFunctionNames)
 	{
 		char ch = 0;
 
@@ -571,7 +571,7 @@ public:
 
 
 private:
-	// TODO - što s funkcijama koje imaju više parametara?
+	// TODO - sto s funkcijama koje imaju vise parametara?
 	std::unordered_map<string, FunctionOneParam> _defFunc;
 
 	vector<Operator>	_definedOperators;
