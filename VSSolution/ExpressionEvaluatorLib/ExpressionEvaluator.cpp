@@ -9,50 +9,6 @@ using std::vector;
 using std::stack;
 
 
-string	ExpressionEvaluator::driver(string inputExpr)
-{
-	string		result;
-	vector<Token> tokens;
-	CalculatorStatus	outStatus = CalculatorStatus::STATUS_OK;
-
-	tokens = tokenize(inputExpr);
-
-	double res = evaluateExpression(tokens, &outStatus);
-
-	if (outStatus == CalculatorStatus::STATUS_OK)
-		result = std::to_string(res);
-	else
-		result = _errorMessages[outStatus];
-
-	return result;
-}
-
-vector<Token> ExpressionEvaluator::tokenize(string inExpr)
-{
-	vector<Token> vecTokens;
-	stringstream s(inExpr);
-	Tokenizer tokenizer(s);
-
-	Token t;
-	do
-	{
-		t = tokenizer.getNext(_defFunc);
-		vecTokens.push_back(t);
-	} while (t.tokenType != TokenType::end);
-
-	return vecTokens;
-}
-
-double	ExpressionEvaluator::evaluateExpression(vector<Token> &vecTokens, CalculatorStatus *outStatus)
-{
-	vector<Token> output = transformToRPN(vecTokens, outStatus);
-
-	if (*outStatus == CalculatorStatus::STATUS_OK)
-		return evaluateRPN(output, outStatus);
-	else
-		return 0.0;
-}
-
 // Implementation of Shunting-Yard algorithm (http://en.wikipedia.org/wiki/Shunting-yard_algorithm) 
 vector<Token>	ExpressionEvaluator::transformToRPN(vector<Token> &vecTokens, CalculatorStatus *outStatus)
 {

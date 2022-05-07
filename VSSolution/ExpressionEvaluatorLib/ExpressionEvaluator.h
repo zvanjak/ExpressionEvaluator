@@ -41,13 +41,6 @@ public:
 		initializeCalculator();
 	}
 
-	~ExpressionEvaluator()
-	{
-		// TODO - delete all DefinedFunctions
-	}
-
-	typedef double(*FunctionOneParam)(double);
-
 	bool addUserDefinedFunction(string inName, DefinedFunction* inFunc)
 	{
 		// TODO - check for function with that name already present
@@ -56,10 +49,50 @@ public:
 		return true;
 	}
 
-	string			driver(string inputExpression);
+	string	driver(string inputExpr)
+	{
+		string		result;
+		vector<Token> tokens;
+		CalculatorStatus	outStatus = CalculatorStatus::STATUS_OK;
 
-	vector<Token>	tokenize(string inExpr);
-	double			evaluateExpression(vector<Token> &vecTokens, CalculatorStatus *outStatus);
+		tokens = tokenize(inputExpr);
+
+		double res = evaluateExpression(tokens, &outStatus);
+
+		if (outStatus == CalculatorStatus::STATUS_OK)
+			result = std::to_string(res);
+		else
+			result = _errorMessages[outStatus];
+
+		return result;
+	}
+
+	vector<Token> tokenize(string inExpr)
+	{
+		vector<Token> vecTokens;
+		stringstream s(inExpr);
+		Tokenizer tokenizer(s);
+
+		Token t;
+		do
+		{
+			t = tokenizer.getNext(_defFunc);
+			vecTokens.push_back(t);
+		} while (t.tokenType != TokenType::end);
+
+		return vecTokens;
+	}
+
+	double	evaluateExpression(vector<Token>& vecTokens, CalculatorStatus* outStatus)
+	{
+		vector<Token> output = transformToRPN(vecTokens, outStatus);
+
+		if (*outStatus == CalculatorStatus::STATUS_OK)
+			return evaluateRPN(output, outStatus);
+		else
+			return 0.0;
+	}
+
 	vector<Token>	transformToRPN(vector<Token> &vecTokens, CalculatorStatus *outStatus);
 	double			evaluateRPN(vector<Token> output, CalculatorStatus *outStatus);
 
