@@ -3,20 +3,18 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project (RPNEvaluator VERSION 0.1.0)
-
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/catch)
 add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
 include_directories(include)
 
-file(GLOB SOURCES src/ExpressionEvaluator.cpp)
-file(GLOB TESTS tests/BasicExpressionsTests.cpp tests/ErrorsTests.cpp tests/TokenizerTests.cpp)
+file(GLOB SOURCES src/Function.cpp)
+file(GLOB TESTS tests/FunctionTests.cpp)
 
-add_library (ExpressionEvaluatorLib ${SOURCES} )
+add_library (TestCMakeLib ${SOURCES} )
 
-add_executable(ExpressionEvaluatorTests "main.cpp" ${TESTS} ${SOURCES})
-target_link_libraries(ExpressionEvaluatorTests Catch)
+add_executable(TestCMakeTests "TestCmake.cpp" ${TESTS} ${SOURCES})
+target_link_libraries(TestCMakeTests Catch)
 
 # TODO: Add tests and install targets if needed.
