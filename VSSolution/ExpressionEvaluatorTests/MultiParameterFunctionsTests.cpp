@@ -57,7 +57,7 @@ namespace ScientificCalculatorTests
 			Assert::AreEqual(6.0, _calculator.evaluate("simpleFunc(simpleFunc(1,1),simpleFunc(2,2))", &outStatus));
 		}
 
-		
+
 
 	private:
 		ExpressionEvaluator _calculator;
