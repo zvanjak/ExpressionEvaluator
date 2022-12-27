@@ -17,7 +17,8 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
 file(GLOB ExpressionEvaluator_TESTS tests/BasicExpressionsTests.cpp 
                 tests/ErrorsTests.cpp 
-                tests/TokenizerTests.cpp)
+                tests/TokenizerTests.cpp
+                tests/AddingUserDefFunctionsTests.cpp)
 
 add_executable(ExpressionEvaluatorTests "ExpressionEvaluator_TestRunner.cpp" ${ExpressionEvaluator_TESTS} )
 target_link_libraries(ExpressionEvaluatorTests Catch)
