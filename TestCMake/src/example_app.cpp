@@ -1,12 +1,12 @@
 #include <string>
 #include <iostream>
 
-#include "../ExpressionEvaluatorLib/ExpressionEvaluator.h"
+#include "ExpressionEvaluator.h"
 
 using std::getline;
 using std::string;
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
 {
 	string inputString;
 	ExpressionEvaluator calculator;
