@@ -6,12 +6,12 @@ TODO
 1. DONE - add tests and example driver app
 2. DONE - prune linear equation solver from solution
 3. DONE - put in more test for verifying unary minus functionality
-4. implement correct handling of unary minus
+4. DONE - implement correct handling of unary minus
 5. add larger set of functions
-6. add support for "comma operator", enabling functions with multiple parameters
+6. DONE - add support for "comma operator", enabling functions with multiple parameters
 7. add few functions of that kind
 8. add tests to verify multiparameter function functionality
-9. make it a CMake project
-10. clone it on Linux and work on it a bit
+9. DONE - make it a CMake project
+10. DONE - clone it on Linux/Mac and work on it a bit
 11. see for integration with existing mathematical libraries (special functions?)
 12. 
