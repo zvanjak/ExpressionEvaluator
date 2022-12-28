@@ -11,8 +11,12 @@ int main()
 	string inputString;
 	ExpressionEvaluator calculator;
 
-	while (getline(std::cin, inputString))
+    std::cout << "Enter expression :";
+   	while (getline(std::cin, inputString))
+    {
 		std::cout << calculator.driver(inputString) << std::endl;
+        std::cout << "Enter expression :";
+    }
 
 	return 0;
 }
