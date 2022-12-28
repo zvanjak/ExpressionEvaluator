@@ -2,7 +2,7 @@
 #include "ExpressionEvaluator.h"
 
 
-double simple_two_param_func(double x, double y)
+double simpleTwoParamFunc(double x, double y)
 {
 	return x + y;
 }
@@ -12,9 +12,9 @@ TEST_CASE("Test_SimpleTwoParamFunction1", "[errors]")
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
-    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simple_two_param_func));
+    _calculator.addUserDefinedFunction("simpleTwoParamFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
-    REQUIRE(4.0 == _calculator.evaluate("simpleFunc(2,2)", &outStatus));
+    REQUIRE(4.0 == _calculator.evaluate("simpleTwoParamFunc(2,2)", &outStatus));
 }
 
 TEST_CASE("Test_SimpleTwoParamFunction2", "[errors]")
@@ -22,9 +22,9 @@ TEST_CASE("Test_SimpleTwoParamFunction2", "[errors]")
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
-    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simple_two_param_func));
+    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
-    REQUIRE(10.0 == _calculator.evaluate("simpleFunc(2+2,2*3)", &outStatus));
+    REQUIRE(simpleTwoParamFunc(2+2,2*3) == _calculator.evaluate("simpleTwoParamFunc(2+2,2*3)", &outStatus));
 }
 
 TEST_CASE("Test_SimpleTwoParamFunction3", "[errors]")
@@ -32,7 +32,7 @@ TEST_CASE("Test_SimpleTwoParamFunction3", "[errors]")
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
-    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simple_two_param_func));
+    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
-    REQUIRE(6.0 == _calculator.evaluate("simpleFunc(simpleFunc(1,1),simpleFunc(2,2))", &outStatus));
+    REQUIRE(simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2)) == _calculator.evaluate("simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2))", &outStatus));
 }
