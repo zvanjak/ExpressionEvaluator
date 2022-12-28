@@ -24,6 +24,8 @@ TEST_CASE("Test_AddSimpleFunction2", "[errors]")
     _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
 
     REQUIRE(simpleFunc(2+2) == _calculator.evaluate("simpleFunc(2+2)", &outStatus));    
+    REQUIRE(simpleFunc(2-3) == _calculator.evaluate("simpleFunc(2-3)", &outStatus));    
+    REQUIRE(simpleFunc(2 * (1 - 2)) == _calculator.evaluate("simpleFunc(2 * (1 - 2))", &outStatus));    
 }
 
 TEST_CASE("Test_AddSimpleFunction3", "[errors]")
@@ -34,4 +36,6 @@ TEST_CASE("Test_AddSimpleFunction3", "[errors]")
     _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
 
     REQUIRE(simpleFunc(sin(2)) == _calculator.evaluate("simpleFunc(sin(2))", &outStatus));    
+    REQUIRE(simpleFunc(cos(2)) == _calculator.evaluate("simpleFunc(cos(2))", &outStatus));    
+    REQUIRE(simpleFunc(exp(2)) == _calculator.evaluate("simpleFunc(exp(2))", &outStatus));    
 }

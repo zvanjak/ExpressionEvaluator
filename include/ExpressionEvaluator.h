@@ -418,6 +418,7 @@ private:
 		_defFunc["sin"] = new DefinedFunctionOneParam(sin);
 		_defFunc["cos"] = new DefinedFunctionOneParam(cos);
 		_defFunc["log"] = new DefinedFunctionOneParam(log);
+		_defFunc["exp"] = new DefinedFunctionOneParam(exp);
 
 		_definedOperators.push_back({ '+', 1, false, false });
 		_definedOperators.push_back({ '-', 1, false, false });
