@@ -20,6 +20,7 @@ public:
 	{
 		_numParam = 1;
 		_ptrFunc = b._ptrFunc;
+        return *this;
 	}
 
 	double(*_ptrFunc)(double);
@@ -35,6 +36,7 @@ public:
 	{
 		_numParam = 2;
 		_ptrFunc = b._ptrFunc;
+        return *this;
 	}
 
 	double(*_ptrFunc)(double, double);

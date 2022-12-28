@@ -47,7 +47,7 @@ public:
 			t.tokenType == TokenType::pow;
 	}
 
-	Token Tokenizer::getNext(std::unordered_map<string, DefinedFunction *> inFunctionNames)
+	Token getNext(std::unordered_map<string, DefinedFunction *> inFunctionNames)
 	{
 		char ch = 0;
 

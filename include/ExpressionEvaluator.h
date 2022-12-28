@@ -4,6 +4,8 @@
 #include <stack>
 #include <map>
 #include <unordered_map>
+#include <cmath>
+#include <algorithm>
 
 #include "Tokenizer.h"
 
