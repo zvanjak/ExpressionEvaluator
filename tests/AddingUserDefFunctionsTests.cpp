@@ -28,6 +28,16 @@ TEST_CASE("Test_UserDefinedFunction_SimpleExprAsParam", "[errors]")
     REQUIRE(simpleFunc(2 * (1 - 2)) == _calculator.evaluate("simpleFunc(2 * (1 - 2))", &outStatus));    
 }
 
+TEST_CASE("Test_UserDefinedFunction_ComplexExprAsParam", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+    CalculatorStatus outStatus;
+
+    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
+
+    REQUIRE(simpleFunc(10.5/(1+sin(2/(-4.5*0.78)))) == _calculator.evaluate("simpleFunc(10.5/(1+sin(2/(-4.5*0.78))))", &outStatus));    
+}
+
 TEST_CASE("Test_UserDefinedFunction_CallToFuncsAsParam", "[errors]")
 {
 	ExpressionEvaluator _calculator;
