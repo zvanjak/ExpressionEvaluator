@@ -6,7 +6,7 @@ double simpleFunc(double a)
 	return a * 2;
 }
 
-TEST_CASE("Test_AddSimpleFunction1", "[errors]")
+TEST_CASE("Test_UserDefinedFunction_SimpleEvaluation", "[errors]")
 {
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
@@ -16,7 +16,7 @@ TEST_CASE("Test_AddSimpleFunction1", "[errors]")
     REQUIRE(simpleFunc(2) == _calculator.evaluate("simpleFunc(2)", &outStatus));    
 }
 
-TEST_CASE("Test_AddSimpleFunction2", "[errors]")
+TEST_CASE("Test_UserDefinedFunction_SimpleExprAsParam", "[errors]")
 {
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
@@ -28,7 +28,7 @@ TEST_CASE("Test_AddSimpleFunction2", "[errors]")
     REQUIRE(simpleFunc(2 * (1 - 2)) == _calculator.evaluate("simpleFunc(2 * (1 - 2))", &outStatus));    
 }
 
-TEST_CASE("Test_AddSimpleFunction3", "[errors]")
+TEST_CASE("Test_UserDefinedFunction_CallToFuncsAsParam", "[errors]")
 {
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
