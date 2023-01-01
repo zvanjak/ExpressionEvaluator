@@ -14,4 +14,3 @@ TODO
 9. DONE - make it a CMake project
 10. DONE - clone it on Linux/Mac and work on it a bit
 11. see for integration with existing mathematical libraries (special functions?)
-12. 
