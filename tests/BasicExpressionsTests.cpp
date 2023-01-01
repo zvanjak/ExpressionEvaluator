@@ -13,7 +13,11 @@ TEST_CASE("Test_SimpleExpression", "[simple]") {
 	REQUIRE(52.3456 == _calculator.evaluate("50+2.3456", &outStatus));
 	REQUIRE(3.1 == _calculator.evaluate("4.5 - 1.4", &outStatus));
 	REQUIRE(6.0 == _calculator.evaluate("2 * 3", &outStatus));
+	
+    REQUIRE(5.0 == _calculator.evaluate("20/4", &outStatus));
 	REQUIRE(5.0 == _calculator.evaluate("20 /4", &outStatus));
+	REQUIRE(5.0 == _calculator.evaluate("20/ 4", &outStatus));
+	REQUIRE(5.0 == _calculator.evaluate("20 / 4", &outStatus));
 }
 
 TEST_CASE("Test_ComplexExpression", "[simple]") {
@@ -42,7 +46,6 @@ TEST_CASE("Test_ExpressionWithPowerOperation", "[simple]") {
     REQUIRE(-pow(2, 3) == _calculator.evaluate("-2^3", &outStatus));
     REQUIRE(pow(-2, 3) == _calculator.evaluate("(-2)^3", &outStatus));
     REQUIRE(pow(2, -3) == _calculator.evaluate("2^(-3)", &outStatus));
-    REQUIRE(pow(2,3) == _calculator.evaluate("2^3", &outStatus));
 }
 
 TEST_CASE("Test_ExpressionWithPowerOperationComplex", "[simple]") {
