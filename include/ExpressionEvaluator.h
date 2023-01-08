@@ -139,6 +139,29 @@ public:
 				lastElem = TokenType::comma;
 
 				// do nothing :)
+				//  Until the token at the top of the stack is a left parenthesis, pop operators off the stack onto the output queue.
+				bool foundLeftParenth = false;
+                // if (stack.size() == 0)
+				// {
+				// 	*outStatus = CalculatorStatus::MISMATCHED_PARENTHESIS;
+				// 	return output;
+				// }
+				Token topStackToken = stack.top();
+				while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
+				{
+					// TODO - write this cleaner!
+					stack.pop();
+
+					if (topStackToken.tokenType != TokenType::left)
+						output.push_back(topStackToken);
+					else
+						foundLeftParenth = true;
+
+					if (stack.size() > 0)
+						topStackToken = stack.top();
+					else
+						break;
+				}                
 			}
 			else if (t.tokenType == TokenType::name)											//If the token is a function token, then push it onto the stack.
 			{

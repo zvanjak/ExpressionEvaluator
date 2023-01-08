@@ -24,7 +24,10 @@ TEST_CASE("Test_SimpleTwoParamFunction2", "[errors]")
 
     _calculator.addUserDefinedFunction("simpleTwoParamFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
-    REQUIRE(simpleTwoParamFunc(2+2,2*3) == _calculator.evaluate("simpleTwoParamFunc(2+2,2*3)", &outStatus));
+    //REQUIRE(simpleTwoParamFunc(2+2,2*3) == _calculator.evaluate("simpleTwoParamFunc(2+2,2*3)", &outStatus));
+    REQUIRE(simpleTwoParamFunc(1+2*3,4*5-6) == _calculator.evaluate("simpleTwoParamFunc(1+2*3,4*5-6)", &outStatus));
+    REQUIRE(simpleTwoParamFunc(2+2*3-4,2*3-1/8.5) == _calculator.evaluate("simpleTwoParamFunc(2+2*3-4,2*3-1/8.5)", &outStatus));
+    
     REQUIRE(simpleTwoParamFunc(-2+3,2*3) == _calculator.evaluate("simpleTwoParamFunc(-2+3,2*3)", &outStatus));
     REQUIRE(simpleTwoParamFunc(2*sin(0.5),cos(2)*3) == _calculator.evaluate("simpleTwoParamFunc(2*sin(0.5),cos(2)*3)", &outStatus));
 }
