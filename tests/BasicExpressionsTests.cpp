@@ -88,60 +88,31 @@ TEST_CASE("Test_CompleteComplexExpression1", "[simple]") {
     REQUIRE(2 * log(10) + 3 / sin(2.5) + 2 * (2 + cos(sin(23 - log(5.345)))) == _calculator.evaluate("2 *log(10) + 3/sin(  2.5)+2*(2+cos(sin(23 - log(5.345))))", &outStatus));
 }
 
-TEST_CASE("Test_SyntaxError1", "[simple]") {
+TEST_CASE("Test_SyntaxErrors", "[simple]") {
 	ExpressionEvaluator _calculator;
 	CalculatorStatus outStatus;
 	
     _calculator.evaluate("2 + (2 *2", &outStatus);
-
     REQUIRE(CalculatorStatus::MISMATCHED_PARENTHESIS == outStatus);
-}
-TEST_CASE("Test_SyntaxError2", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
     double res = _calculator.evaluate("2(2+2)", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError3", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("2 3", &outStatus);
+    res = _calculator.evaluate("2 3", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError4", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("()", &outStatus);
+    res = _calculator.evaluate("()", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError5", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("2 sin(10)", &outStatus);
+    res = _calculator.evaluate("2 sin(10)", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError6", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("2+(2+2) *3 / 5 +456 * 26 ( 4 + 5)", &outStatus);
+    res = _calculator.evaluate("2+(2+2) *3 / 5 +456 * 26 ( 4 + 5)", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError7", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("2^-3", &outStatus);
+    res = _calculator.evaluate("2^-3", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
-}
-TEST_CASE("Test_SyntaxError8", "[simple]") {
-	ExpressionEvaluator _calculator;
-	CalculatorStatus outStatus;
 	
-    double res = _calculator.evaluate("2+5-", &outStatus);
+    res = _calculator.evaluate("2+5-", &outStatus);
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
 }
