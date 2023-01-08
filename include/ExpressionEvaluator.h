@@ -51,7 +51,7 @@ public:
 		initializeCalculator();
 	}
 
-	bool		addUserDefinedFunction(string inName, DefinedFunction* inFunc)
+	bool    addUserDefinedFunction(string inName, DefinedFunction* inFunc)
 	{
 		// TODO - check for function with that name already present
 		_defFunc[inName] = inFunc;
@@ -420,10 +420,35 @@ public:
 private:
 	void	initializeCalculator()
 	{
-		_defFunc["sin"] = new DefinedFunctionOneParam(sin);
-		_defFunc["cos"] = new DefinedFunctionOneParam(cos);
+		_defFunc["sqrt"] = new DefinedFunctionOneParam(sqrt);
+		_defFunc["cbrt"] = new DefinedFunctionOneParam(cbrt);
 		_defFunc["log"] = new DefinedFunctionOneParam(log);
 		_defFunc["exp"] = new DefinedFunctionOneParam(exp);
+		_defFunc["log10"] = new DefinedFunctionOneParam(log10);
+
+		_defFunc["sin"] = new DefinedFunctionOneParam(sin);
+		_defFunc["cos"] = new DefinedFunctionOneParam(cos);
+		_defFunc["tan"] = new DefinedFunctionOneParam(tan);
+		_defFunc["asin"] = new DefinedFunctionOneParam(asin);
+		_defFunc["acos"] = new DefinedFunctionOneParam(acos);
+		_defFunc["atan"] = new DefinedFunctionOneParam(atan);
+
+		_defFunc["sinh"] = new DefinedFunctionOneParam(sinh);
+		_defFunc["cosh"] = new DefinedFunctionOneParam(cosh);
+		_defFunc["tanh"] = new DefinedFunctionOneParam(tanh);
+		_defFunc["asinh"] = new DefinedFunctionOneParam(asinh);
+		_defFunc["acosh"] = new DefinedFunctionOneParam(acosh);
+		_defFunc["atanh"] = new DefinedFunctionOneParam(atanh);
+
+
+    {std::erf, "erf", -1e6, 1e6},
+    {std::erfc, "erfc", -1e6, 1e6},
+    {std::tgamma, "tgamma", -1e3, 1e3},
+    {std::lgamma, "lgamma", -1e3, 1e3},
+    {std::riemann_zeta, "riemann_zeta", -1e3, 1e3},
+    {std::comp_ellint_1, "comp_ellint_1", -1e3, 1e3},
+    {std::comp_ellint_2, "comp_ellint_2", -1e3, 1e3},
+
 
 		_definedOperators.push_back({ '+', 1, false, false });
 		_definedOperators.push_back({ '-', 1, false, false });
