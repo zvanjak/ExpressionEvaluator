@@ -217,6 +217,11 @@ public:
 				//	If the token at the top of the stack is a function token, pop it onto the output queue.
 				//	If the stack runs out without finding a left parenthesis, then there are mismatched parentheses.
 				bool foundLeftParenth = false;
+                if (stack.size() == 0)
+				{
+					*outStatus = CalculatorStatus::MISMATCHED_PARENTHESIS;
+					return output;
+				}
 				Token topStackToken = stack.top();
 				while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
 				{
