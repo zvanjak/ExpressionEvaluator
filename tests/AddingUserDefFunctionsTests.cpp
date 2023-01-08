@@ -26,6 +26,8 @@ TEST_CASE("Test_UserDefinedFunction_SimpleExprAsParam", "[errors]")
     REQUIRE(simpleFunc(2+2) == _calculator.evaluate("simpleFunc(2+2)", &outStatus));    
     REQUIRE(simpleFunc(2-3) == _calculator.evaluate("simpleFunc(2-3)", &outStatus));    
     REQUIRE(simpleFunc(2 * (1 - 2)) == _calculator.evaluate("simpleFunc(2 * (1 - 2))", &outStatus));    
+    REQUIRE(simpleFunc(-2) == _calculator.evaluate("simpleFunc(-2)", &outStatus));    
+    REQUIRE(simpleFunc(-2*3) == _calculator.evaluate("simpleFunc(-2*3)", &outStatus));    
 }
 
 TEST_CASE("Test_UserDefinedFunction_ComplexExprAsParam", "[errors]")
@@ -48,6 +50,7 @@ TEST_CASE("Test_UserDefinedFunction_CallToFuncsAsParam", "[errors]")
     REQUIRE(simpleFunc(sin(2)) == _calculator.evaluate("simpleFunc(sin(2))", &outStatus));    
     REQUIRE(simpleFunc(cos(2)) == _calculator.evaluate("simpleFunc(cos(2))", &outStatus));    
     REQUIRE(simpleFunc(exp(2)) == _calculator.evaluate("simpleFunc(exp(2))", &outStatus));    
+    REQUIRE(simpleFunc(exp(2 * sin(3.15))) == _calculator.evaluate("simpleFunc(exp(2 * sin(3.15)))", &outStatus));    
 }
 
 TEST_CASE("Test_UserDefinedFunction_RecursiveCallAsParam", "[errors]")
@@ -58,4 +61,5 @@ TEST_CASE("Test_UserDefinedFunction_RecursiveCallAsParam", "[errors]")
     _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
 
     REQUIRE(simpleFunc(simpleFunc(2)) == _calculator.evaluate("simpleFunc(simpleFunc(2))", &outStatus));    
+    REQUIRE(simpleFunc(simpleFunc(2+2) + 2) == _calculator.evaluate("simpleFunc(simpleFunc(2+2) + 2)", &outStatus));    
 }
