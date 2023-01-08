@@ -22,7 +22,7 @@ TEST_CASE("Test_SimpleTwoParamFunction2", "[errors]")
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
-    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
+    _calculator.addUserDefinedFunction("simpleTwoParamFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
     REQUIRE(simpleTwoParamFunc(2+2,2*3) == _calculator.evaluate("simpleTwoParamFunc(2+2,2*3)", &outStatus));
 }
@@ -32,7 +32,7 @@ TEST_CASE("Test_SimpleTwoParamFunction3", "[errors]")
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
-    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
+    _calculator.addUserDefinedFunction("simpleTwoParamFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
     REQUIRE(simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2)) == _calculator.evaluate("simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2))", &outStatus));
 }
