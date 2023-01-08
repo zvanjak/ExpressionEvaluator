@@ -440,15 +440,10 @@ private:
 		_defFunc["acosh"] = new DefinedFunctionOneParam(acosh);
 		_defFunc["atanh"] = new DefinedFunctionOneParam(atanh);
 
-
-    {std::erf, "erf", -1e6, 1e6},
-    {std::erfc, "erfc", -1e6, 1e6},
-    {std::tgamma, "tgamma", -1e3, 1e3},
-    {std::lgamma, "lgamma", -1e3, 1e3},
-    {std::riemann_zeta, "riemann_zeta", -1e3, 1e3},
-    {std::comp_ellint_1, "comp_ellint_1", -1e3, 1e3},
-    {std::comp_ellint_2, "comp_ellint_2", -1e3, 1e3},
-
+		_defFunc["erf"] = new DefinedFunctionOneParam(erf);
+		_defFunc["erfc"] = new DefinedFunctionOneParam(erfc);
+		_defFunc["tgamma"] = new DefinedFunctionOneParam(tgamma);
+		_defFunc["lgamma"] = new DefinedFunctionOneParam(lgamma);
 
 		_definedOperators.push_back({ '+', 1, false, false });
 		_definedOperators.push_back({ '-', 1, false, false });
