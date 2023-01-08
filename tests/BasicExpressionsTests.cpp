@@ -62,6 +62,7 @@ TEST_CASE("Test_SimpleFunction", "[simple]") {
     REQUIRE(log(10) == _calculator.evaluate("log(10)", &outStatus));
     REQUIRE(sin(2) == _calculator.evaluate("sin(2)", &outStatus));
     REQUIRE(cos(2) == _calculator.evaluate("cos(2)", &outStatus));
+    REQUIRE(2*sin(1.5) + cos(2)*3 == _calculator.evaluate("2*sin(1.5) + cos(2)*3", &outStatus));
 }
 
 TEST_CASE("Test_ComplexFunction", "[simple]") {
