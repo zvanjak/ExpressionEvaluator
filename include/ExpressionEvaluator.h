@@ -82,6 +82,22 @@ public:
 		return result;
 	}
 
+	double	evaluate(string inputExpr, string &outErrorMsg)
+	{
+		string		result;
+		vector<Token> tokens;
+		CalculatorStatus	outStatus = CalculatorStatus::STATUS_OK;
+
+		tokens = tokenize(inputExpr);
+
+		double res = evaluateExpression(tokens, &outStatus);
+
+		if (outStatus != CalculatorStatus::STATUS_OK)
+			outErrorMsg = _errorMessages[outStatus];
+
+		return res;
+	}
+
 	double	evaluateExpression(vector<Token>& vecTokens, CalculatorStatus* outStatus)
 	{
 		vector<Token> output = transformToRPN(vecTokens, outStatus);
