@@ -25,3 +25,5 @@ TEST_CASE("Test_SyntaxError", "[errors]")
 	REQUIRE(_calculator.getErrorMessage(CalculatorStatus::SYNTAX_ERROR) == res);
 	REQUIRE(_calculator.driver("sin 3") == _calculator.getErrorMessage(CalculatorStatus::SYNTAX_ERROR));
 }
+
+// runtime errors - sqrt(-1), asin(5), ...
