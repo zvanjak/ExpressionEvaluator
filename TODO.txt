@@ -1,0 +1,30 @@
+IDEJA: definiranje intervala definirane funkcije kroz lambdu, koja vraća true/false za danu vrijednost parametra
+
+TODO:
+1. proširiti i bolje organizirati skup testova; 
+2. proširiti s kompletno dostupnim skupom funkcija iz standarda, uključujući i 2-param specijalne funkcije
+3. 
+4. DODATI E NOTACIJU ZA BROJEVE
+5. 
+6. proširiti skup testova za syntax errore
+7. svugdje ugraditi provjere
+8. izvidjeti kako bolje hendlati errore - može li se dati više info korisniku Evaluatora
+9. 
+10. kreirati pogonski Qt projekt
+	1. Iteracija 1 - ima edit box za zadavanje izraza, na Enter evaluacija, i text box za prikaz toga
+	2. Iteracija 2 - Math engine pravi, s mogućnošću definiranja varijabli i pravim Notebookom za prikaz rezultata
+
+- koncept DOMENE za definirane funkcije!!!
+- funkcije koje NE VRAĆAJu double?
+
+Release 1.0
+- sve funkcije iz math.h, podržane single operator funkcije, dobar error handling, široki skup testova
+
+Release 1.1
+- podržane funkcije s 2 i 3 parametra; implementirane nove specijalne funkcije iz C++17 standarda
+
+Release 2.0
+- proširiti na kompleksne brojeve
+
+
+
