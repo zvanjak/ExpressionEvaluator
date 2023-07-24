@@ -199,7 +199,7 @@ public:
 
 				// check for unary minus
 				if (t.tokenType == TokenType::minus &&
-					(lastElem == TokenType::end || lastElem == TokenType::left))
+					(lastElem == TokenType::end || lastElem == TokenType::left || lastElem == TokenType::comma))
 				{
 					// we have unary minus	
 					t.tokenType = TokenType::unary_minus;
