@@ -7,24 +7,26 @@ TEST_CASE("Test_UnaryMinus_SimpleExpression", "[errors]")
     CalculatorStatus outStatus;
 
     REQUIRE(-4.0 == _calculator.evaluate("-4", &outStatus));
+    REQUIRE(-(-(-(-(-4)))) == _calculator.evaluate("-(-(-(-(-4))))", &outStatus));
     REQUIRE(0.0 == _calculator.evaluate("-2+2", &outStatus));
-    REQUIRE(-50 + 2.3456 == _calculator.evaluate("-50+2.3456", &outStatus));
+    REQUIRE(-50.45 + 2.3456 == _calculator.evaluate("-50.45+2.3456", &outStatus));
     REQUIRE(-3.1 == _calculator.evaluate("- 4.5 + 1.4", &outStatus));
-    REQUIRE(-6.0 == _calculator.evaluate("-2 * 3", &outStatus));
+    REQUIRE(6.0 == _calculator.evaluate("-2 * (-3)", &outStatus));
     REQUIRE(-5.0 == _calculator.evaluate("-20 /4", &outStatus));
+    REQUIRE(-5.0 == _calculator.evaluate("20 /(-4)", &outStatus));
 }
 
 TEST_CASE("Test_UnaryMinus_ComplexExpression", "[errors]") {
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
+    REQUIRE(- 4.5 + (-3 * 1.4) == _calculator.evaluate("- 4.5 + (-3 * 1.4)", &outStatus));
+    REQUIRE(- 4.5 + (-3 * (-1.4)) == _calculator.evaluate("- 4.5 + (-3 * (-1.4))", &outStatus));
     REQUIRE(-24.0 == _calculator.evaluate("4 * (-2 * 3)", &outStatus));
     REQUIRE(-1.0 == _calculator.evaluate("-(-2 +3)", &outStatus));
     REQUIRE(-1.0 == _calculator.evaluate("(-(-2 +3))", &outStatus));
     REQUIRE(-6.0 == _calculator.evaluate("-3 +(-3)", &outStatus));
     REQUIRE(-3.1 == _calculator.evaluate("- 4.5 + 1.4", &outStatus));
-    REQUIRE(-6.0 == _calculator.evaluate("-2 * 3", &outStatus));
-    REQUIRE(-5.0 == _calculator.evaluate("-20 /4", &outStatus));
 }
 
 TEST_CASE("Test_UnaryMinus_ComplexExpression2", "[errors]") {
@@ -32,7 +34,8 @@ TEST_CASE("Test_UnaryMinus_ComplexExpression2", "[errors]") {
     CalculatorStatus outStatus;
 
     REQUIRE(-2.0*(-1 + (2 * 4 + (-5.25)*2.5 + 3 - 5 * 6 / (-2) + 10)) == _calculator.evaluate("-2.0*(-1+(2*4+(-5.25)*2.5+3-5*6/(-2)+10))", &outStatus));
-    REQUIRE(1000.0/10/10/10 == _calculator.evaluate("1000.0/10/10/10", &outStatus));
+    REQUIRE(1000.0/(-10)/10/10 == _calculator.evaluate("1000.0/(-10)/10/10", &outStatus));
+    REQUIRE(1000.0/(-10)/10*(-10) == _calculator.evaluate("1000.0/(-10)/10*(-10)", &outStatus));
 }
 
 TEST_CASE("Test_UnaryMinusWithParenthesis", "[errors]") {
@@ -44,7 +47,7 @@ TEST_CASE("Test_UnaryMinusWithParenthesis", "[errors]") {
     REQUIRE(4.0 == _calculator.evaluate("2 * (-2 + 3) *2", &outStatus));
 }
 
-TEST_CASE("Test_UnaryMinusSimpleFunction", "[errors]") {
+TEST_CASE("Test_UnaryMinusSimpleFunction", "[simple]") {
 	ExpressionEvaluator _calculator;
     CalculatorStatus outStatus;
 
