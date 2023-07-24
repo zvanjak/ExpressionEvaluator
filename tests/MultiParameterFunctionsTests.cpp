@@ -58,10 +58,10 @@ TEST_CASE("Test_TwoParamFunction_CallToFuncsAsParam", "[errors]")
 
     _calculator.addUserDefinedFunction("simpleTwoParamFunc", new DefinedFunctionTwoParam(simpleTwoParamFunc));
 
-    // REQUIRE(simpleTwoParamFunc(sin(2), 2) == _calculator.evaluate("simpleTwoParamFunc(sin(2), 2)", &outStatus));    
+    REQUIRE(simpleTwoParamFunc(sin(2), 2) == _calculator.evaluate("simpleTwoParamFunc(sin(2), 2)", &outStatus));    
     REQUIRE(simpleTwoParamFunc(cos(2), -2) == _calculator.evaluate("simpleTwoParamFunc(cos(2), -2)", &outStatus));    
-    // REQUIRE(simpleTwoParamFunc(exp(2), -tan(0.5)) == _calculator.evaluate("simpleTwoParamFunc(exp(2), -tan(0.5))", &outStatus));    
-    // REQUIRE(simpleTwoParamFunc(exp(2 * sin(3.15)), -tan(0.5)) == _calculator.evaluate("simpleTwoParamFunc(exp(2 * sin(3.15)), -tan(0.5))", &outStatus));    
+    REQUIRE(simpleTwoParamFunc(exp(2), -tan(0.5)) == _calculator.evaluate("simpleTwoParamFunc(exp(2), -tan(0.5))", &outStatus));    
+    REQUIRE(simpleTwoParamFunc(exp(2 * sin(3.15)), -tan(0.5)) == _calculator.evaluate("simpleTwoParamFunc(exp(2 * sin(3.15)), -tan(0.5))", &outStatus));    
 }
 
 TEST_CASE("Test_TwoParamFunction_RecursiveCallAsParam", "[errors]")
@@ -74,4 +74,15 @@ TEST_CASE("Test_TwoParamFunction_RecursiveCallAsParam", "[errors]")
     REQUIRE(simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2)) == _calculator.evaluate("simpleTwoParamFunc(simpleTwoParamFunc(1,1),simpleTwoParamFunc(2,2))", &outStatus));
     REQUIRE(simpleTwoParamFunc(simpleTwoParamFunc(2+2,2*3),simpleTwoParamFunc(1+2*3,4*5-6)) == _calculator.evaluate("simpleTwoParamFunc(simpleTwoParamFunc(2+2,2*3),simpleTwoParamFunc(1+2*3,4*5-6))", &outStatus));
     REQUIRE(simpleTwoParamFunc(simpleTwoParamFunc(-2+3,2*3),simpleTwoParamFunc(2*sin(0.5),cos(2)*3)) == _calculator.evaluate("simpleTwoParamFunc(simpleTwoParamFunc(-2+3,2*3),simpleTwoParamFunc(2*sin(0.5),cos(2)*3))", &outStatus));
+}
+
+TEST_CASE("Test_TwoParamFunction_InComplexExpression", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+    CalculatorStatus outStatus;
+
+    _calculator.addUserDefinedFunction("subTwoParamFunc", new DefinedFunctionTwoParam(subTwoParamFunc));
+
+    REQUIRE(sin(subTwoParamFunc(-2, -cos(1)) / 3) + subTwoParamFunc(cos(1.5), -2) == 
+    _calculator.evaluate("sin(subTwoParamFunc(-2, -cos(1)) / 3) + subTwoParamFunc(cos(1.5), -2)", &outStatus));    
 }
