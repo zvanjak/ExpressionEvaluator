@@ -91,7 +91,7 @@ TEST_CASE("Test_CompleteComplexExpression1", "[simple]") {
     REQUIRE(2 * log(10) + 3 / sin(2.5) + 2 * (2 + cos(sin(23 - log(5.345)))) == _calculator.evaluate("2 *log(10) + 3/sin(  2.5)+2*(2+cos(sin(23 - log(5.345))))", &outStatus));
 }
 
-TEST_CASE("Test_SyntaxErrors", "[simple]") {
+TEST_CASE("Test_SyntaxErrors", "[errors]") {
 	ExpressionEvaluator _calculator;
 	CalculatorStatus outStatus;
 	

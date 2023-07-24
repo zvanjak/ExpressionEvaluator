@@ -419,7 +419,8 @@ public:
 						Token oper2 = evalStack.top(); evalStack.pop();
 
 						DefinedFunctionTwoParam* func = dynamic_cast<DefinedFunctionTwoParam*> (iter->second);
-						res.numberValue = func->_ptrFunc(oper1.numberValue, oper2.numberValue);
+                        // we are actually getting operands in reverse order
+						res.numberValue = func->_ptrFunc(oper2.numberValue, oper1.numberValue);
 						break;
 					}
 					case 3:

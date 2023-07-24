@@ -63,3 +63,13 @@ TEST_CASE("Test_UserDefinedFunction_RecursiveCallAsParam", "[errors]")
     REQUIRE(simpleFunc(simpleFunc(2)) == _calculator.evaluate("simpleFunc(simpleFunc(2))", &outStatus));    
     REQUIRE(simpleFunc(simpleFunc(2+2) + 2) == _calculator.evaluate("simpleFunc(simpleFunc(2+2) + 2)", &outStatus));    
 }
+
+TEST_CASE("Test_UserDefinedFunction_InComplexExpression", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+    CalculatorStatus outStatus;
+
+    _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
+
+    REQUIRE(sin(simpleFunc(-2) / 3) + simpleFunc(cos(1.5)) == _calculator.evaluate("sin(simpleFunc(-2) / 3) + simpleFunc(cos(1.5))", &outStatus));    
+}
