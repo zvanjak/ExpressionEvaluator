@@ -49,6 +49,29 @@ TEST_CASE("Test_InsufficientOperand", "[errors]")
 	REQUIRE(CalculatorStatus::INSUFFICIENT_OPERAND == outStatus);
 }
 
+TEST_CASE("Test_ArityMismatchAndMalformedCommas", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+	CalculatorStatus outStatus;
+
+	// too many arguments for a unary function
+	_calculator.evaluate("sin(1,2)", &outStatus);
+	REQUIRE(outStatus != CalculatorStatus::STATUS_OK);
+
+	// trailing and leading commas in call
+	_calculator.evaluate("sin(,1)", &outStatus);
+	REQUIRE(outStatus != CalculatorStatus::STATUS_OK);
+
+	// missing argument after comma in two-param function
+	_calculator.addUserDefinedFunction("two", new DefinedFunctionTwoParam([](double x, double y) { return x + y; }));
+	_calculator.evaluate("two(1,)", &outStatus);
+	REQUIRE(outStatus != CalculatorStatus::STATUS_OK);
+
+	// too many arguments for two-param function
+	_calculator.evaluate("two(1,2,3)", &outStatus);
+	REQUIRE(outStatus != CalculatorStatus::STATUS_OK);
+}
+
 TEST_CASE("Test_RuntimeMathFaults", "[errors]")
 {
 	ExpressionEvaluator _calculator;
@@ -68,6 +91,15 @@ TEST_CASE("Test_RuntimeMathFaults", "[errors]")
 
 	_calculator.evaluate("(-2)^(0.5)", &outStatus);
 	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+
+	_calculator.evaluate("asin(2)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+
+	_calculator.evaluate("acos(2)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+
+	_calculator.evaluate("log(0)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
 }
 
 TEST_CASE("Test_UnknownVariable", "[errors]")
@@ -79,6 +111,18 @@ TEST_CASE("Test_UnknownVariable", "[errors]")
 	REQUIRE(CalculatorStatus::UNKNOWN_VARIABLE == outStatus);
 
 	_calculator.evaluate("2 * y", &outStatus);
+	REQUIRE(CalculatorStatus::UNKNOWN_VARIABLE == outStatus);
+}
+
+TEST_CASE("Test_UnknownOrBadIdentifiers", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+	CalculatorStatus outStatus;
+
+	_calculator.evaluate("unknownFunc(1)", &outStatus);
+	REQUIRE(outStatus != CalculatorStatus::STATUS_OK);
+
+	_calculator.evaluate("a + b + c", &outStatus);
 	REQUIRE(CalculatorStatus::UNKNOWN_VARIABLE == outStatus);
 }
 
