@@ -138,7 +138,7 @@ enum class CalculatorStatus
 	ERROR_IN_CALCULATION,
 	NO_EQUAL_SIGN_IN_EQUATION,
 	NO_VAR_IN_EQUATION,
-	INIFINITY_VARIABLE_VALUE
+	INFINITY_VARIABLE_VALUE
 };
 
 class ExpressionEvaluator
@@ -175,7 +175,7 @@ public:
 		_errorMessages[CalculatorStatus::ERROR_IN_CALCULATION] = "Error during calculation";
 		_errorMessages[CalculatorStatus::NO_EQUAL_SIGN_IN_EQUATION] = "Missing equal sign in equation";
 		_errorMessages[CalculatorStatus::NO_VAR_IN_EQUATION] = "No variable in equation";
-		_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
+		_errorMessages[CalculatorStatus::INFINITY_VARIABLE_VALUE] = "Infinite variable value";
 	}
 
 	bool  addUserDefinedFunction(string inName, FunctionOneParam inFunc)
