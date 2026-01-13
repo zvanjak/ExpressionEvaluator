@@ -76,3 +76,14 @@ TEST_CASE("Tokenizer_TestWithParenthesis", "[errors]")
 	t = tokenizer.getNext(defFunc);				REQUIRE(TokenType::right == t.tokenType);
 }
 
+TEST_CASE("Tokenizer_ScientificNotation", "[errors]")
+{
+	std::stringstream s("1e3 + 2E-2");
+	Tokenizer tokenizer(s);
+	std::unordered_map<string, DefinedFunction *> defFunc;
+
+	Token t = tokenizer.getNext(defFunc);	REQUIRE(1000.0 == t.numberValue);
+	t = tokenizer.getNext(defFunc);			REQUIRE(TokenType::plus == t.tokenType);
+	t = tokenizer.getNext(defFunc);			REQUIRE(0.02 == Approx(t.numberValue));
+}
+

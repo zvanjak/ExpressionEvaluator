@@ -57,6 +57,14 @@ TEST_CASE("Test_ExpressionWithPowerOperationComplex", "[simple]") {
     REQUIRE(pow(2,(3 - 10 / 5.25)) / (pow(-2, 3) * 2 + 1) == _calculator.evaluate("2^(3 - 10/5.25)/((-2)^3*2+1)", &outStatus));
 }
 
+TEST_CASE("Test_ScientificNotationExpression", "[simple]") {
+    ExpressionEvaluator _calculator;
+    CalculatorStatus outStatus;
+
+    REQUIRE(1000.0 + 0.02 == _calculator.evaluate("1e3 + 2E-2", &outStatus));
+    REQUIRE(1.5e3 - 3.25E2 == _calculator.evaluate("1.5e3 - 3.25E2", &outStatus));
+}
+
 TEST_CASE("Test_SimpleFunction", "[simple]") {
 	ExpressionEvaluator _calculator;
 	CalculatorStatus outStatus;
@@ -117,5 +125,5 @@ TEST_CASE("Test_SyntaxErrors", "[errors]") {
     REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
 	
     res = _calculator.evaluate("2+5-", &outStatus);
-    REQUIRE(CalculatorStatus::SYNTAX_ERROR == outStatus);
+    REQUIRE(CalculatorStatus::INSUFFICIENT_OPERAND == outStatus);
 }

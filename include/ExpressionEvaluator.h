@@ -31,7 +31,9 @@ enum class CalculatorStatus
 	ERROR_IN_CALCULATION,
 	NO_EQUAL_SIGN_IN_EQUATION,
 	NO_VAR_IN_EQUATION,
-	INIFINITY_VARIABLE_VALUE
+	INIFINITY_VARIABLE_VALUE,
+	UNKNOWN_FUNCTION,
+	INSUFFICIENT_OPERAND
 };
 
 
@@ -157,11 +159,11 @@ public:
 				// do nothing :)
 				//  Until the token at the top of the stack is a left parenthesis, pop operators off the stack onto the output queue.
 				bool foundLeftParenth = false;
-                // if (stack.size() == 0)
-				// {
-				// 	*outStatus = CalculatorStatus::MISMATCHED_PARENTHESIS;
-				// 	return output;
-				// }
+				if (stack.size() == 0)
+				{
+					*outStatus = CalculatorStatus::SYNTAX_ERROR;
+					return output;
+				}
 				Token topStackToken = stack.top();
 				while (Tokenizer::isTokenOperator(topStackToken) || topStackToken.tokenType == TokenType::function && topStackToken.tokenType != TokenType::left)
 				{
@@ -348,6 +350,12 @@ public:
 				// if it is a unary operator
 				if (t.tokenType == TokenType::unary_minus)
 				{
+					if (evalStack.size() < 1)
+					{
+						*outStatus = CalculatorStatus::INSUFFICIENT_OPERAND;
+						return 0.0;
+					}
+
 					// take operand from the top of the stack
 					Token operand = evalStack.top(); evalStack.pop();
 
@@ -360,7 +368,7 @@ public:
 					// take two element from top of the evaluation stack and perform operation
 					if (evalStack.size() < 2)
 					{
-						*outStatus = CalculatorStatus::SYNTAX_ERROR;
+						*outStatus = CalculatorStatus::INSUFFICIENT_OPERAND;
 						return 0.0;
 					}
 
@@ -399,36 +407,52 @@ public:
 			}
 			else if (t.tokenType == TokenType::function)
 			{
-				// TODO - check if there is actually an operand on stack
-				Token oper1 = evalStack.top(); evalStack.pop();
-				Token res;
-
 				auto iter = _defFunc.find(t.stringValue);
-				if (iter != end(_defFunc))
+				if (iter == end(_defFunc))
 				{
-					switch (iter->second->_numParam)
-					{
-					case 1:
-					{
-						DefinedFunctionOneParam* func = dynamic_cast<DefinedFunctionOneParam*> (iter->second);
-						res.numberValue = func->_ptrFunc(oper1.numberValue);
-						break;
-					}
-					case 2:
-					{
-						Token oper2 = evalStack.top(); evalStack.pop();
-
-						DefinedFunctionTwoParam* func = dynamic_cast<DefinedFunctionTwoParam*> (iter->second);
-                        // we are actually getting operands in reverse order
-						res.numberValue = func->_ptrFunc(oper2.numberValue, oper1.numberValue);
-						break;
-					}
-					case 3:
-						break;
-					}
-					res.tokenType = TokenType::number;
-					evalStack.push(res);
+					*outStatus = CalculatorStatus::UNKNOWN_FUNCTION;
+					return 0.0;
 				}
+
+				Token res;
+				switch (iter->second->_numParam)
+				{
+				case 1:
+				{
+					if (evalStack.size() < 1)
+					{
+						*outStatus = CalculatorStatus::INSUFFICIENT_OPERAND;
+						return 0.0;
+					}
+					Token oper1 = evalStack.top(); evalStack.pop();
+					DefinedFunctionOneParam* func = dynamic_cast<DefinedFunctionOneParam*> (iter->second);
+					res.numberValue = func->_ptrFunc(oper1.numberValue);
+					break;
+				}
+				case 2:
+				{
+					if (evalStack.size() < 2)
+					{
+						*outStatus = CalculatorStatus::INSUFFICIENT_OPERAND;
+						return 0.0;
+					}
+					Token oper1 = evalStack.top(); evalStack.pop();
+					Token oper2 = evalStack.top(); evalStack.pop();
+
+					DefinedFunctionTwoParam* func = dynamic_cast<DefinedFunctionTwoParam*> (iter->second);
+					// we are actually getting operands in reverse order
+					res.numberValue = func->_ptrFunc(oper2.numberValue, oper1.numberValue);
+					break;
+				}
+				case 3:
+					*outStatus = CalculatorStatus::SYNTAX_ERROR;
+					return 0.0;
+				default:
+					*outStatus = CalculatorStatus::ERROR_IN_CALCULATION;
+					return 0.0;
+				}
+				res.tokenType = TokenType::number;
+				evalStack.push(res);
 			}
 
 			++iter2;
@@ -499,6 +523,8 @@ private:
 		_errorMessages[CalculatorStatus::NO_EQUAL_SIGN_IN_EQUATION] = "Missing equal sign in equation";
 		_errorMessages[CalculatorStatus::NO_VAR_IN_EQUATION] = "No variable in equation";
 		_errorMessages[CalculatorStatus::INIFINITY_VARIABLE_VALUE] = "Infinite variable value";
+		_errorMessages[CalculatorStatus::UNKNOWN_FUNCTION] = "Unknown function";
+		_errorMessages[CalculatorStatus::INSUFFICIENT_OPERAND] = "Insufficient operand";
 	}
 
 	bool	isFunctionName(string s)
