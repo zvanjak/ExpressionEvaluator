@@ -33,7 +33,9 @@ enum class CalculatorStatus
 	NO_VAR_IN_EQUATION,
 	INFINITY_VARIABLE_VALUE,
 	UNKNOWN_FUNCTION,
-	INSUFFICIENT_OPERAND
+	INSUFFICIENT_OPERAND,
+	DIVISION_BY_ZERO,
+	DOMAIN_ERROR
 };
 
 
@@ -361,6 +363,11 @@ public:
 
 					res.numberValue = -operand.numberValue;
 					res.tokenType = TokenType::number;
+					if (isInvalidResult(res.numberValue))
+					{
+						*outStatus = CalculatorStatus::DOMAIN_ERROR;
+						return 0.0;
+					}
 					evalStack.push(res);
 				}
 				else
@@ -379,30 +386,33 @@ public:
 					{
 					case TokenType::plus:
 						res.numberValue = oper1.numberValue + oper2.numberValue;
-						res.tokenType = TokenType::number;
-						evalStack.push(res);
 						break;
 					case TokenType::minus:
 						res.numberValue = oper2.numberValue - oper1.numberValue;
-						res.tokenType = TokenType::number;
-						evalStack.push(res);
 						break;
 					case TokenType::mul:
 						res.numberValue = oper1.numberValue * oper2.numberValue;
-						res.tokenType = TokenType::number;
-						evalStack.push(res);
 						break;
 					case TokenType::div:
+						if (oper1.numberValue == 0.0)
+						{
+							*outStatus = CalculatorStatus::DIVISION_BY_ZERO;
+							return 0.0;
+						}
 						res.numberValue = oper2.numberValue / oper1.numberValue;
-						res.tokenType = TokenType::number;
-						evalStack.push(res);
 						break;
 					case TokenType::pow:
 						res.numberValue = pow(oper2.numberValue, oper1.numberValue);
-						res.tokenType = TokenType::number;
-						evalStack.push(res);
 						break;
 					}
+
+					res.tokenType = TokenType::number;
+					if (isInvalidResult(res.numberValue))
+					{
+						*outStatus = CalculatorStatus::DOMAIN_ERROR;
+						return 0.0;
+					}
+					evalStack.push(res);
 				}
 			}
 			else if (t.tokenType == TokenType::function)
@@ -452,6 +462,11 @@ public:
 					return 0.0;
 				}
 				res.tokenType = TokenType::number;
+				if (isInvalidResult(res.numberValue))
+				{
+					*outStatus = CalculatorStatus::DOMAIN_ERROR;
+					return 0.0;
+				}
 				evalStack.push(res);
 			}
 
@@ -525,6 +540,8 @@ private:
 		_errorMessages[CalculatorStatus::INFINITY_VARIABLE_VALUE] = "Infinite variable value";
 		_errorMessages[CalculatorStatus::UNKNOWN_FUNCTION] = "Unknown function";
 		_errorMessages[CalculatorStatus::INSUFFICIENT_OPERAND] = "Insufficient operand";
+		_errorMessages[CalculatorStatus::DIVISION_BY_ZERO] = "Division by zero";
+		_errorMessages[CalculatorStatus::DOMAIN_ERROR] = "Domain error";
 	}
 
 	bool	isFunctionName(string s)
@@ -556,6 +573,11 @@ private:
 		auto findOper = std::find_if(begin(_definedOperators), end(_definedOperators), [operName](Operator& o) { return o._name == operName; });
 
 		return *findOper;
+	}
+
+	bool isInvalidResult(double value)
+	{
+		return std::isnan(value) || std::isinf(value);
 	}
 
 	void	checkTransition(TokenType from, TokenType to, CalculatorStatus* outStatus)

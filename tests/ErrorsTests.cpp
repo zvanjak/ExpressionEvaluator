@@ -49,4 +49,25 @@ TEST_CASE("Test_InsufficientOperand", "[errors]")
 	REQUIRE(CalculatorStatus::INSUFFICIENT_OPERAND == outStatus);
 }
 
+TEST_CASE("Test_RuntimeMathFaults", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+	CalculatorStatus outStatus;
+
+	_calculator.evaluate("1/0", &outStatus);
+	REQUIRE(CalculatorStatus::DIVISION_BY_ZERO == outStatus);
+
+	_calculator.evaluate("2/(1-1)", &outStatus);
+	REQUIRE(CalculatorStatus::DIVISION_BY_ZERO == outStatus);
+
+	_calculator.evaluate("sqrt(-1)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+
+	_calculator.evaluate("log(-1)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+
+	_calculator.evaluate("(-2)^(0.5)", &outStatus);
+	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
+}
+
 // runtime errors - sqrt(-1), asin(5), ...
