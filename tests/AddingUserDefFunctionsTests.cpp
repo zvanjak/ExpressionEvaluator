@@ -1,10 +1,26 @@
 #include "catch.hpp"
 #include "ExpressionEvaluator.h"
+#include <memory>
 
 double simpleFunc(double a)
 {
 	return a * 2;
 }
+
+double tripleFunc(double a)
+{
+    return a * 3;
+}
+
+struct TrackingFunctionOneParam : public DefinedFunctionOneParam
+{
+    static int destructCount;
+
+    explicit TrackingFunctionOneParam(double(*fn)(double)) : DefinedFunctionOneParam(fn) {}
+    ~TrackingFunctionOneParam() override { ++destructCount; }
+};
+
+int TrackingFunctionOneParam::destructCount = 0;
 
 TEST_CASE("Test_UserDefinedFunction_SimpleEvaluation", "[errors]")
 {
@@ -72,4 +88,23 @@ TEST_CASE("Test_UserDefinedFunction_InComplexExpression", "[errors]")
     _calculator.addUserDefinedFunction("simpleFunc", new DefinedFunctionOneParam(simpleFunc));
 
     REQUIRE(sin(simpleFunc(-2) / 3) + simpleFunc(cos(1.5)) == _calculator.evaluate("sin(simpleFunc(-2) / 3) + simpleFunc(cos(1.5))", &outStatus));    
+}
+
+TEST_CASE("Test_UserDefinedFunction_OwnershipTransferred", "[ownership]")
+{
+    TrackingFunctionOneParam::destructCount = 0;
+
+    {
+        ExpressionEvaluator calc;
+        CalculatorStatus status;
+
+        auto owned = std::make_unique<TrackingFunctionOneParam>(tripleFunc);
+        calc.addUserDefinedFunction("triple", owned.release());
+
+        status = CalculatorStatus::STATUS_OK;
+        REQUIRE(tripleFunc(4.0) == calc.evaluate("triple(4)", &status));
+        REQUIRE(status == CalculatorStatus::STATUS_OK);
+    }
+
+    REQUIRE(TrackingFunctionOneParam::destructCount == 1);
 }

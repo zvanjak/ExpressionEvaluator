@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 #include "DefinedFunction.h"
 
 using std::string;
@@ -47,7 +48,7 @@ public:
 			t.tokenType == TokenType::pow;
 	}
 
-	Token getNext(std::unordered_map<string, DefinedFunction *> inFunctionNames)
+	Token getNext(const std::unordered_map<string, std::unique_ptr<DefinedFunction>>& inFunctionNames)
 	{
 		char ch = 0;
 

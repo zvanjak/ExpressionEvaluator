@@ -3,7 +3,8 @@
 class DefinedFunction
 {
 public:
-	DefinedFunction(int n) : _numParam(n) {}
+	virtual ~DefinedFunction() = default;
+	explicit DefinedFunction(int n) : _numParam(n) {}
 
 	virtual int getNumParam() { return _numParam; }
 

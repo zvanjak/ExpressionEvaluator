@@ -4,6 +4,7 @@
 #include <stack>
 #include <map>
 #include <unordered_map>
+#include <memory>
 #include <cmath>
 #include <algorithm>
 
@@ -44,7 +45,7 @@ class ExpressionEvaluator
 {
 private:
 	// TODO - što s funkcijama koje imaju više parametara?
-	std::unordered_map<string, DefinedFunction*> _defFunc;
+	std::unordered_map<string, std::unique_ptr<DefinedFunction>> _defFunc;
 
 	vector<Operator>	_definedOperators;
 
@@ -56,10 +57,12 @@ public:
 		initializeCalculator();
 	}
 
+	~ExpressionEvaluator() = default;
+
 	bool    addUserDefinedFunction(string inName, DefinedFunction* inFunc)
 	{
 		// TODO - check for function with that name already present
-		_defFunc[inName] = inFunc;
+		_defFunc[inName] = std::unique_ptr<DefinedFunction>(inFunc);
 
 		return true;
 	}
@@ -441,7 +444,7 @@ public:
 						return 0.0;
 					}
 					Token oper1 = evalStack.top(); evalStack.pop();
-					DefinedFunctionOneParam* func = dynamic_cast<DefinedFunctionOneParam*> (iter->second);
+					DefinedFunctionOneParam* func = dynamic_cast<DefinedFunctionOneParam*>(iter->second.get());
 					res.numberValue = func->_ptrFunc(oper1.numberValue);
 					break;
 				}
@@ -455,7 +458,7 @@ public:
 					Token oper1 = evalStack.top(); evalStack.pop();
 					Token oper2 = evalStack.top(); evalStack.pop();
 
-					DefinedFunctionTwoParam* func = dynamic_cast<DefinedFunctionTwoParam*> (iter->second);
+					DefinedFunctionTwoParam* func = dynamic_cast<DefinedFunctionTwoParam*>(iter->second.get());
 					// we are actually getting operands in reverse order
 					res.numberValue = func->_ptrFunc(oper2.numberValue, oper1.numberValue);
 					break;
@@ -505,30 +508,37 @@ public:
 private:
 	void	initializeCalculator()
 	{
-		_defFunc["sqrt"] = new DefinedFunctionOneParam(sqrt);
-		_defFunc["cbrt"] = new DefinedFunctionOneParam(cbrt);
-		_defFunc["log"] = new DefinedFunctionOneParam(log);
-		_defFunc["exp"] = new DefinedFunctionOneParam(exp);
-		_defFunc["log10"] = new DefinedFunctionOneParam(log10);
+		using Unary = double(*)(double);
 
-		_defFunc["sin"] = new DefinedFunctionOneParam(sin);
-		_defFunc["cos"] = new DefinedFunctionOneParam(cos);
-		_defFunc["tan"] = new DefinedFunctionOneParam(tan);
-		_defFunc["asin"] = new DefinedFunctionOneParam(asin);
-		_defFunc["acos"] = new DefinedFunctionOneParam(acos);
-		_defFunc["atan"] = new DefinedFunctionOneParam(atan);
+		auto makeUnary = [](Unary fn)
+		{
+			return std::make_unique<DefinedFunctionOneParam>(fn);
+		};
 
-		_defFunc["sinh"] = new DefinedFunctionOneParam(sinh);
-		_defFunc["cosh"] = new DefinedFunctionOneParam(cosh);
-		_defFunc["tanh"] = new DefinedFunctionOneParam(tanh);
-		_defFunc["asinh"] = new DefinedFunctionOneParam(asinh);
-		_defFunc["acosh"] = new DefinedFunctionOneParam(acosh);
-		_defFunc["atanh"] = new DefinedFunctionOneParam(atanh);
+		_defFunc["sqrt"] = makeUnary(static_cast<Unary>(sqrt));
+		_defFunc["cbrt"] = makeUnary(static_cast<Unary>(cbrt));
+		_defFunc["log"] = makeUnary(static_cast<Unary>(log));
+		_defFunc["exp"] = makeUnary(static_cast<Unary>(exp));
+		_defFunc["log10"] = makeUnary(static_cast<Unary>(log10));
 
-		_defFunc["erf"] = new DefinedFunctionOneParam(erf);
-		_defFunc["erfc"] = new DefinedFunctionOneParam(erfc);
-		_defFunc["tgamma"] = new DefinedFunctionOneParam(tgamma);
-		_defFunc["lgamma"] = new DefinedFunctionOneParam(lgamma);
+		_defFunc["sin"] = makeUnary(static_cast<Unary>(sin));
+		_defFunc["cos"] = makeUnary(static_cast<Unary>(cos));
+		_defFunc["tan"] = makeUnary(static_cast<Unary>(tan));
+		_defFunc["asin"] = makeUnary(static_cast<Unary>(asin));
+		_defFunc["acos"] = makeUnary(static_cast<Unary>(acos));
+		_defFunc["atan"] = makeUnary(static_cast<Unary>(atan));
+
+		_defFunc["sinh"] = makeUnary(static_cast<Unary>(sinh));
+		_defFunc["cosh"] = makeUnary(static_cast<Unary>(cosh));
+		_defFunc["tanh"] = makeUnary(static_cast<Unary>(tanh));
+		_defFunc["asinh"] = makeUnary(static_cast<Unary>(asinh));
+		_defFunc["acosh"] = makeUnary(static_cast<Unary>(acosh));
+		_defFunc["atanh"] = makeUnary(static_cast<Unary>(atanh));
+
+		_defFunc["erf"] = makeUnary(static_cast<Unary>(erf));
+		_defFunc["erfc"] = makeUnary(static_cast<Unary>(erfc));
+		_defFunc["tgamma"] = makeUnary(static_cast<Unary>(tgamma));
+		_defFunc["lgamma"] = makeUnary(static_cast<Unary>(lgamma));
 
 		_definedOperators.push_back({ '+', 1, false, false });
 		_definedOperators.push_back({ '-', 1, false, false });
@@ -553,11 +563,7 @@ private:
 
 	bool	isFunctionName(string s)
 	{
-		auto iter = _defFunc.find(s);
-		if (iter != end(_defFunc))
-			return true;
-		else
-			return false;
+		return _defFunc.find(s) != end(_defFunc);
 	}
 
 	char	getOperatorChar(Token t)
