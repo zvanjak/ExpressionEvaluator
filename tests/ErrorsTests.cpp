@@ -70,4 +70,16 @@ TEST_CASE("Test_RuntimeMathFaults", "[errors]")
 	REQUIRE(CalculatorStatus::DOMAIN_ERROR == outStatus);
 }
 
+TEST_CASE("Test_UnknownVariable", "[errors]")
+{
+	ExpressionEvaluator _calculator;
+	CalculatorStatus outStatus;
+
+	_calculator.evaluate("x + 2", &outStatus);
+	REQUIRE(CalculatorStatus::UNKNOWN_VARIABLE == outStatus);
+
+	_calculator.evaluate("2 * y", &outStatus);
+	REQUIRE(CalculatorStatus::UNKNOWN_VARIABLE == outStatus);
+}
+
 // runtime errors - sqrt(-1), asin(5), ...

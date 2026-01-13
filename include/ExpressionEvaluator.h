@@ -35,7 +35,8 @@ enum class CalculatorStatus
 	UNKNOWN_FUNCTION,
 	INSUFFICIENT_OPERAND,
 	DIVISION_BY_ZERO,
-	DOMAIN_ERROR
+	DOMAIN_ERROR,
+	UNKNOWN_VARIABLE
 };
 
 
@@ -339,8 +340,13 @@ public:
 		{
 			Token t = *iter2;
 
-			if (t.tokenType == TokenType::number || t.tokenType == TokenType::name)
+			if (t.tokenType == TokenType::number)
 				evalStack.push(t);
+			else if (t.tokenType == TokenType::name)
+			{
+				*outStatus = CalculatorStatus::UNKNOWN_VARIABLE;
+				return 0.0;
+			}
 			else if (t.tokenType == TokenType::comma)
 			{
 				// do nothing :)
@@ -542,6 +548,7 @@ private:
 		_errorMessages[CalculatorStatus::INSUFFICIENT_OPERAND] = "Insufficient operand";
 		_errorMessages[CalculatorStatus::DIVISION_BY_ZERO] = "Division by zero";
 		_errorMessages[CalculatorStatus::DOMAIN_ERROR] = "Domain error";
+		_errorMessages[CalculatorStatus::UNKNOWN_VARIABLE] = "Unknown variable";
 	}
 
 	bool	isFunctionName(string s)
